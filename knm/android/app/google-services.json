@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "377165231790",
+    "project_id": "setupios",
+    "storage_bucket": "setupios.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:377165231790:android:bf50384e314bcd8a6e1f3f",
+        "android_client_info": {
+          "package_name": "com.example.knm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "377165231790-s8aadb0hm4f67po386mt6dp811gij6h7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPeVgnIg43IPGB-Jyhpt6SbAQ03LWvJCA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "377165231790-s8aadb0hm4f67po386mt6dp811gij6h7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "377165231790-i6kejvvu0vaumoh92eigqo1scjceo6c9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.knm"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
