@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:knm/firebase_options.dart';
-import 'package:knm/screen/homepage.dart';
+import 'package:knm/screen/home/homepage.dart';
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,

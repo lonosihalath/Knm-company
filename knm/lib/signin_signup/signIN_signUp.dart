@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:knm/screen/homepage.dart';
+import 'package:knm/screen/home/homepage.dart';
 
 class Signin_SignUP extends StatefulWidget {
   const Signin_SignUP({Key? key}) : super(key: key);
@@ -42,17 +42,21 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
       }
       return Colors.white;
     }
-
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-            bottom: PreferredSize(preferredSize: Size.fromHeight(20),child: Container(),),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(20),
+            child: Container(),
+          ),
           elevation: 0,
           backgroundColor: Colors.transparent,
           leading: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+              },
               icon: Icon(
                 Icons.arrow_back,
                 color: Colors.white,
