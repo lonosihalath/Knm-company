@@ -19,7 +19,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static final String title = 'Native Splash Screen';
+  static const String title = '';
 
   // This widget is the root of your application.
   @override
