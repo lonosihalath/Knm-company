@@ -8,6 +8,14 @@ class CreateOrder extends StatefulWidget {
 }
 
 class _CreateOrderState extends State<CreateOrder> {
+  TextEditingController _controllername = TextEditingController();
+  TextEditingController _controllernamephone = TextEditingController();
+  TextEditingController _controllernameaddress = TextEditingController();
+  TextEditingController _controllerparcel = TextEditingController();
+  TextEditingController _controllertonthang = TextEditingController();
+  TextEditingController _controllerpaithang = TextEditingController();
+  TextEditingController _controllercategories = TextEditingController();
+  //TextEditingController _controllercategories = TextEditingController();
   var currentSelectedValuetel;
   var currentSelectedValueTonthang;
   var currentSelectedValuepiythang;
@@ -123,7 +131,7 @@ class _CreateOrderState extends State<CreateOrder> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          textfiled2('ປະເພດພັດສະດຸ'),
+                   
                           Row(
                             children: [
                               Radio(
@@ -246,7 +254,7 @@ class _CreateOrderState extends State<CreateOrder> {
 
   Container selecttel(double width) {
     return Container(
-      width: width * 0.20,
+      width: width * 0.22,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: FormField<String>(
@@ -294,7 +302,7 @@ class _CreateOrderState extends State<CreateOrder> {
 
   Container phone(double screen) {
     return Container(
-      width: screen * 0.65,
+      width: screen * 0.60,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
@@ -341,7 +349,7 @@ class _CreateOrderState extends State<CreateOrder> {
 
   Container selectsakhaTonthang(double width) {
     return Container(
-      width: width * 0.43,
+      width: width * 0.40,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: FormField<String>(
@@ -360,7 +368,7 @@ class _CreateOrderState extends State<CreateOrder> {
                   hint: Text(
                     'ເລືອກສາຂາຕົ້ນທາງ',
                     style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 12,
                         fontFamily: 'nsl_bold',
                         color: Colors.grey.shade600),
                   ),
@@ -389,7 +397,7 @@ class _CreateOrderState extends State<CreateOrder> {
 
   Container selectsakhapiythang(double width) {
     return Container(
-      width: width * 0.43,
+      width: width * 0.40,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: FormField<String>(
@@ -408,7 +416,7 @@ class _CreateOrderState extends State<CreateOrder> {
                   hint: Text(
                     'ເລືອກສາຂາປາຍທາງ',
                     style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 12,
                         fontFamily: 'nsl_bold',
                         color: Colors.grey.shade600),
                   ),
@@ -485,7 +493,7 @@ class _CreateOrderState extends State<CreateOrder> {
 
   Container widthheigth(double screen) {
     return Container(
-      width: screen * 0.43,
+      width: screen * 0.40,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
@@ -511,7 +519,7 @@ class _CreateOrderState extends State<CreateOrder> {
 
   Container numnuk(double screen) {
     return Container(
-      width: screen * 0.43,
+      width: screen * 0.40,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(

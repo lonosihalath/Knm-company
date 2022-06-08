@@ -1,7 +1,20 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'dart:async';
+
+import 'package:country_code_picker/country_code_picker.dart';
+import 'package:get/get.dart';
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:knm/callapi/OTPController.dart';
+import 'package:knm/callapi/api_signup_signin.dart';
 import 'package:knm/screen/home/homepage.dart';
+import 'package:knm/signin_signup/user_account/controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class Signin_SignUP extends StatefulWidget {
   const Signin_SignUP({Key? key}) : super(key: key);
@@ -29,6 +42,111 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
   TextEditingController surname = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController password2 = TextEditingController();
+  TextEditingController cfpassword = TextEditingController();
+  final Controller controller = Get.find<Controller>();
+
+  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+
+  _register() async {
+    var data = {
+      'name': name.text,
+      'email': email2.text,
+      'phone': '56677603',
+      'birth': 'ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ',
+      'gender': 'ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ',
+      'password': password2.text,
+      'password_confirmation': password2.text,
+    };
+    var res = await CallApi().postData(
+      data,
+      'register',
+    );
+    print(data);
+    print('Response status: ${res.statusCode}');
+    var body = json.decode(res.body);
+    print(body);
+    if (res.statusCode == 422 ||
+        body.toString() ==
+            '{message: The given data was invalid., errors: {password: [The password confirmation does not match.]}}') {
+      showDialog(context: context, builder: (context) => dialog2());
+      //cfPassword('ກະລຸນາກວດສອບ', 'ອີເມວ ແລະ ລະຫັດຜ່ານຄືນໃໝ່');
+    } else {
+      if (body['success']) {
+        setState(() {
+          status = true;
+        });
+      }
+    }
+  }
+
+  _login() async {
+    print('null!!!!');
+    var data = {'email': email1.text, 'password': password1.text};
+    var res = await CallApi().postDatalogin(
+      data,
+      'login',
+    );
+    var body = json.decode(res.body);
+    print(body);
+    if (body.toString() == '{massage: Email or Password wrong!!}') {
+      showDialog(context: context, builder: (context) => dialog());
+    }
+    if (res.statusCode == 201) {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.setString('token', body['token']);
+      localStorage.setString('id', json.encode(body['user']['id']));
+      controller.onInit();
+      Navigator.pop(context);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomePage_Screen()));
+
+      localStorage.setString('phone', body['user']['phone']);
+    } else {
+      print('No!!!!!!!!!!!!!!!!!!');
+    }
+  }
+
+  Widget dialog3() => CupertinoAlertDialog(
+        title: Center(child: CircularProgressIndicator()),
+        content: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Center(child: Text('ກະລຸນາລໍຖ້າ')),
+        ),
+      );
+  Widget dialog() => CupertinoAlertDialog(
+        title: Text('Worning !!!'),
+        content: Text('Email or Password wrong!!'),
+        actions: [
+          CupertinoDialogAction(
+            child: Text('Ok'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      );
+  Widget dialog2() => CupertinoAlertDialog(
+        title: Column(
+          children: [
+            Icon(Icons.warning,
+                color: Color.fromARGB(255, 255, 21, 0), size: 35),
+            Text('ກະລຸນາກວດສອບ'),
+          ],
+        ),
+        content: Text('ອີເມວ ແລະ ລະຫັດຜ່ານຄືນໃໝ່'),
+        actions: [
+          CupertinoDialogAction(
+            child: Text('Ok'),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      );
+
+  String dialDodeDigis = "+856";
+  TextEditingController _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
@@ -42,6 +160,7 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
       }
       return Colors.white;
     }
+
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -114,7 +233,7 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
                           },
                           child: Text('ລົງທະບຽນ',
                               style: TextStyle(
-                                  fontFamily: 'nsl_bold',
+                                  fontFamily: 'nsl_bold', 
                                   color: status == false
                                       ? Colors.white
                                       : Colors.white60,
@@ -142,7 +261,60 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
                             statepassword1 == true
                                 ? varidator('ປ້ອນລະຫັດຜ່ານ')
                                 : varidator(''),
+                            Column(
+        children: [
+          SizedBox(height: 50),
+          SizedBox(
+            height: 60,
+            width: 400,
+            child: CountryCodePicker(
+              onChanged: (country) {
+                setState(() {
+                  dialDodeDigis = country.dialCode!;
+                });
+              },
+              initialSelection: "Laos",
+              showCountryOnly: false,
+              showOnlyCountryWhenClosed: false,
+              favorite: ["+856", "laos"],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 10, right: 10, left: 10),
+            child: TextField(
+              maxLength: 10,
+              decoration: InputDecoration(
+                  hintText: "Phone Number",
+                  prefix: Padding(
+                      child: Text(dialDodeDigis + '20'),
+                      padding: EdgeInsets.all(4))),
+              keyboardType: TextInputType.number,
+              controller: _controller,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.all(15),
+            width: double.infinity,
+            child: ElevatedButton(
+              child: Text(
+                'Next',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => OTP_Screen(
+                            phone: _controller.text,
+                            codeDigits: dialDodeDigis)));
+              },
+            ),
+          )
+        ],
+      ),
                             forgetPassword(),
+                            buttonLogingoogle(width, height),
                             buttonLogin(width),
                             // login(),
                           ],
@@ -286,6 +458,75 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
     );
   }
 
+  Container buttonLogingoogle(double screen, height1) {
+    return Container(
+      width: screen * 0.90,
+      margin: EdgeInsets.only(top: 15),
+      height: 40,
+      child: RaisedButton(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        onPressed: () async {
+          String accessToken = '';
+          String provider1 = 'google';
+          print('lono');
+          try {
+            var email = '';
+            var name = '';
+            var image = '';
+            var accessToken = '';
+            var idToken = '';
+            var reslut = await _googleSignIn.signIn();
+            var token = await reslut!.authentication;
+            setState(() {
+              email = reslut.email;
+              name = reslut.displayName.toString();
+              image = reslut.photoUrl.toString();
+              accessToken = token.accessToken.toString();
+              idToken = token.idToken.toString();
+            });
+            print('idToken ==>>>' + idToken.length.toString());
+            showDialog(context: context, builder: (context) => dialog3());
+            String _url =
+                'http://10.0.2.2:8000/api/socialite/login?provider_name=$provider1&access_token=$accessToken';
+            var respone = await http.get(Uri.parse(_url), headers: {
+              'Accept': 'application/json',
+            });
+            var res = json.decode(respone.body);
+            
+              SharedPreferences localStorage = await SharedPreferences.getInstance();
+              localStorage.setString('token', res['token']);
+              localStorage.setString('id', json.encode(res['user']['id']));
+              controller.onInit();
+               Timer(Duration(seconds: 2), () {
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => HomePage_Screen()));
+              });
+            
+            print('respone : $res');
+          } catch (error) {
+            print(error);
+          }
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(width: 25, child: Image.asset('images/google.png')),
+            SizedBox(width: 15),
+            Text(
+              'Login with Google',
+              style: TextStyle(
+                  fontSize: 17, color: Colors.black, fontFamily: 'branding'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Container buttonLogin(double screen) {
     return Container(
       width: screen * 0.90,
@@ -316,10 +557,9 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
             });
           }
           if (email1.text.isNotEmpty && password1.text.isNotEmpty) {
-            // _login();
+            showDialog(context: context, builder: (context) => dialog3());
+            _login();
           }
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => HomePage_Screen()));
         },
         child: Text(
           'ເຂົ້າສູ່ລະບົບ',
@@ -489,9 +729,9 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
               surname.text.isNotEmpty &&
               email2.text.isEmpty &&
               password2.text.isEmpty) {
-            // _login();
             print(0);
           } else {
+            _register();
             print('1');
           }
         },

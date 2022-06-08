@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:knm/screen/home/create_order.dart';
@@ -6,7 +7,9 @@ import 'package:knm/screen/home/datasakha.dart';
 import 'package:knm/screen/kitlailakha/kidlailakha.dart';
 import 'package:knm/screen/tackking/order_Tacking.dart';
 import 'package:knm/signin_signup/signIN_signUp.dart';
+import 'package:knm/signin_signup/user_account/controller.dart';
 import 'package:knm/signin_signup/user_profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage_Screen extends StatefulWidget {
   const HomePage_Screen({Key? key}) : super(key: key);
@@ -35,9 +38,28 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    findUser();
+    controller.onInit();
   }
+
+  late var Usertoken = '';
+  Future<Null> findUser() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      Usertoken = preferences.getString('token')!;
+    });
+  }
+
+  late var imagepath;
+  void loadimage() async {
+    SharedPreferences saveimage = await SharedPreferences.getInstance();
+    setState(() {
+      imagepath = saveimage.getString('imagepath');
+    });
+  }
+
+  final Controller controller = Get.find<Controller>();
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +67,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        leading: Container(),
         backgroundColor: Color.fromARGB(255, 22, 141, 239),
         elevation: 0,
         bottom: PreferredSize(
@@ -188,16 +211,17 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => User_Profile()));
+                                        builder: (context) => Usertoken == ''
+                                            ? Signin_SignUP()
+                                            : User_Profile()));
                               },
                               child: Container(
-                                width: 60,
-                                child: Image.asset('images/profile.png'),
-                              ),
+                                      width: 60,
+                                      child: Image.asset('images/profile.png'))
                             )
                           ],
                         ),
-                      ),
+                      ),     
                       Container(
                         margin: EdgeInsets.all(10),
                         padding: EdgeInsets.all(20),
@@ -256,23 +280,23 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                     child: item_main(
                                         'images/sakha.png', 'ຂໍ້ມູນສາຂາ')),
                                 GestureDetector(
-                                  onTap: (){
-                                     Navigator.push(
+                                    onTap: () {
+                                      Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (_) =>
-                                                  Order_Tacking()));
-                                  },
-                                  child: item_main('images/car.png', 'Prackink')),
+                                              builder: (_) => Order_Tacking()));
+                                    },
+                                    child: item_main(
+                                        'images/car.png', 'Prackink')),
                                 GestureDetector(
-                                  onTap: (){
-                                    Navigator.push(
+                                    onTap: () {
+                                      Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (_) =>
-                                                  Phuhub_Screen()));
-                                  },
-                                  child: item_main('images/preson.png', 'ຂໍ້ມູນຜູ້ຮັບ')),
+                                              builder: (_) => Phuhub_Screen()));
+                                    },
+                                    child: item_main(
+                                        'images/preson.png', 'ຂໍ້ມູນຜູ້ຮັບ')),
                               ],
                             ),
                           ],
@@ -282,204 +306,196 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                   )
                 : statusTab2 == true
                     ? Container(
-                        margin: EdgeInsets.only(bottom: height * 0.05),
                         child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(5),
-                              width: width * 0.95,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.white,
-                                  border: Border.all(
-                                      width: 2, color: Color(0xFFFEBA00))),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: List.generate(
-                                    textmain1.length,
-                                    (index) => GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              selected1 = index;
-                                              statussubTab1 = !statussubTab1;
-                                              statussubTab2 = !statussubTab2;
-                                            });
-                                          },
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                width: width * 0.45,
-                                                height: 35,
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            width: width * 0.95,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white,
+                                border: Border.all(
+                                    width: 2, color: Color(0xFFFEBA00))),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: List.generate(
+                                  textmain1.length,
+                                  (index) => GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selected1 = index;
+                                            statussubTab1 = !statussubTab1;
+                                            statussubTab2 = !statussubTab2;
+                                          });
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              width: width * 0.45,
+                                              height: 35,
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  color: selected1 == index
+                                                      ? Color(0xff1380F7)
+                                                      : Colors.white),
+                                              child: Text(
+                                                textmain1[index],
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontFamily: 'nsl_bold',
                                                     color: selected1 == index
-                                                        ? Color(0xff1380F7)
-                                                        : Colors.white),
-                                                child: Text(
-                                                  textmain1[index],
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontFamily: 'nsl_bold',
-                                                      color: selected1 == index
-                                                          ? Colors.white
-                                                          : Color(0xFF1380F7)),
-                                                ),
+                                                        ? Colors.white
+                                                        : Color(0xFF1380F7)),
                                               ),
-                                            ],
-                                          ),
-                                        )),
-                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )),
                             ),
-                            SizedBox(height: 15),
-                            inputIdorder(width),
-                            SizedBox(height: 35),
-                            statussubTab1 == true
-                                ? Container(
-                                    padding: EdgeInsets.all(5),
-                                    width: width * 0.95,
-                                    height: 50,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: List.generate(
-                                          textmain2.length,
-                                          (index) => GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    selected2 = index;
-                                                  });
-                                                },
-                                                child: Column(
-                                                  children: [
-                                                    Container(
-                                                      width: width * 0.30,
-                                                      height: 35,
-                                                      alignment:
-                                                          Alignment.center,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
+                          ),
+                          SizedBox(height: 15),
+                          inputIdorder(width),
+                          SizedBox(height: 35),
+                          statussubTab1 == true
+                              ? Container(
+                                  padding: EdgeInsets.all(5),
+                                  width: width * 0.95,
+                                  height: 50,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: List.generate(
+                                        textmain2.length,
+                                        (index) => GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  selected2 = index;
+                                                });
+                                              },
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    width: width * 0.30,
+                                                    height: 35,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        color: selected2 ==
+                                                                index
+                                                            ? Color(0xff1380F7)
+                                                            : Colors.white),
+                                                    child: Text(
+                                                      textmain2[index],
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          fontFamily:
+                                                              'nsl_bold',
                                                           color: selected2 ==
                                                                   index
-                                                              ? Color(
-                                                                  0xff1380F7)
-                                                              : Colors.white),
-                                                      child: Text(
-                                                        textmain2[index],
-                                                        style: TextStyle(
-                                                            fontSize: 18,
-                                                            fontFamily:
-                                                                'nsl_bold',
-                                                            color: selected2 ==
-                                                                    index
-                                                                ? Colors.white
-                                                                : Color(
-                                                                    0xFF1380F7)),
-                                                      ),
+                                                              ? Colors.white
+                                                              : Color(
+                                                                  0xFF1380F7)),
                                                     ),
-                                                  ],
-                                                ),
-                                              )),
-                                    ),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Colors.white,
-                                        border: Border.all(
-                                            width: 2,
-                                            color: Color(0xFFFEBA00))))
-                                : Container(
-                                    padding: EdgeInsets.all(5),
-                                    width: width * 0.95,
-                                    height: 50,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: List.generate(
-                                          textmain3.length,
-                                          (index) => GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    selected3 = index;
-                                                  });
-                                                },
-                                                child: Column(
-                                                  children: [
-                                                    Container(
-                                                      width: width * 0.30,
-                                                      height: 35,
-                                                      alignment:
-                                                          Alignment.center,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
+                                                  ),
+                                                ],
+                                              ),
+                                            )),
+                                  ),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          width: 2, color: Color(0xFFFEBA00))))
+                              : Container(
+                                  padding: EdgeInsets.all(5),
+                                  width: width * 0.95,
+                                  height: 50,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: List.generate(
+                                        textmain3.length,
+                                        (index) => GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  selected3 = index;
+                                                });
+                                              },
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    width: width * 0.30,
+                                                    height: 35,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        color: selected3 ==
+                                                                index
+                                                            ? Color(0xff1380F7)
+                                                            : Colors.white),
+                                                    child: Text(
+                                                      textmain3[index],
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          fontFamily:
+                                                              'nsl_bold',
                                                           color: selected3 ==
                                                                   index
-                                                              ? Color(
-                                                                  0xff1380F7)
-                                                              : Colors.white),
-                                                      child: Text(
-                                                        textmain3[index],
-                                                        style: TextStyle(
-                                                            fontSize: 18,
-                                                            fontFamily:
-                                                                'nsl_bold',
-                                                            color: selected3 ==
-                                                                    index
-                                                                ? Colors.white
-                                                                : Color(
-                                                                    0xFF1380F7)),
-                                                      ),
+                                                              ? Colors.white
+                                                              : Color(
+                                                                  0xFF1380F7)),
                                                     ),
-                                                  ],
-                                                ),
-                                              )),
-                                    ),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Colors.white,
-                                        border: Border.all(
-                                            width: 2,
-                                            color: Color(0xFFFEBA00)))),
-                            SizedBox(height: 15),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.white,
-                                  border: Border.all(
-                                      width: 3, color: Color(0xFFFEBA00))),
-                              width: width * 0.95,
-                              height: 350,
-                              child: Column(
-                                children: [
-                                  SizedBox(height: 25),
-                                  Container(
-                                    color: Colors.white,
-                                    width: 110,
-                                    height: 110,
-                                    child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(55),
-                                        child: Image.asset('images/logo.jpeg')),
+                                                  ),
+                                                ],
+                                              ),
+                                            )),
                                   ),
-                                  SizedBox(height: 10),
-                                  Text('ບໍ່ມີຂໍ້ມູນ',
-                                      style: TextStyle(
-                                          fontFamily: 'nsl_bold',
-                                          color: Colors.black,
-                                          fontSize: 18)),
-                                ],
-                              ),
-                            )
-                          ],
-                        ))
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          width: 2, color: Color(0xFFFEBA00)))),
+                          SizedBox(height: 15),
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.white,
+                                border: Border.all(
+                                    width: 3, color: Color(0xFFFEBA00))),
+                            width: width * 0.95,
+                            height: 350,
+                            child: Column(
+                              children: [
+                                SizedBox(height: 25),
+                                Container(
+                                  color: Colors.white,
+                                  width: 110,
+                                  height: 110,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(55),
+                                      child: Image.asset('images/logo.jpeg')),
+                                ),
+                                SizedBox(height: 10),
+                                Text('ບໍ່ມີຂໍ້ມູນ',
+                                    style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        color: Colors.black,
+                                        fontSize: 18)),
+                              ],
+                            ),
+                          )
+                        ],
+                      ))
                     : statusTab3 == true
                         ? Container(
+                            margin: EdgeInsets.only(top: 15),
                             width: width * 0.95,
                             height: 600,
                             decoration: BoxDecoration(
@@ -618,7 +634,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           border: Border.all(color: Colors.grey.shade200, width: 2)),
-      width: 140,
+      width: 150,
       child: Column(
         children: [
           Container(

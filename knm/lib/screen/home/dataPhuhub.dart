@@ -117,7 +117,6 @@ class _Phuhub_ScreenState extends State<Phuhub_Screen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          textfiled2('ປະເພດພັດສະດຸ'),
                           Row(
                             children: [
                               Radio(
@@ -207,7 +206,7 @@ class _Phuhub_ScreenState extends State<Phuhub_Screen> {
 
   Container selecttel(double width) {
     return Container(
-      width: width * 0.20,
+      width: width * 0.22,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: FormField<String>(
@@ -255,7 +254,7 @@ class _Phuhub_ScreenState extends State<Phuhub_Screen> {
 
   Container phone(double screen) {
     return Container(
-      width: screen * 0.65,
+      width: screen * 0.62,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(

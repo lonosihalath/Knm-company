@@ -8,6 +8,13 @@ class Kidlailakha_screen extends StatefulWidget {
 }
 
 class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
+  TextEditingController width1 = TextEditingController();
+  TextEditingController heigth = TextEditingController();
+  TextEditingController width2 = TextEditingController();
+  TextEditingController weigth = TextEditingController();
+
+  int price = 6000;
+  double amout = 0;
   var currentSelectedValueTonthang;
   var currentSelectedValuepiythang;
   static var datasakhaTonthang = [
@@ -121,7 +128,7 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('0',
+                            Text(amout.toString(),
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.bold)),
                             Text('₭',
@@ -177,7 +184,15 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
                       side: BorderSide(color: Color(0xFFFEBA00), width: 2))),
               child: Text('ຄຳນວນລາຄາ',
                   style: TextStyle(fontSize: 16, fontFamily: 'nsl_bold')),
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  amout = double.parse(width1.text.toString()) *
+                      double.parse(width2.text.toString()) *
+                      double.parse(heigth.text.toString()); 
+                  amout = amout / 6000; 
+                  amout = amout * price;
+                });
+              },
             ),
           ),
         ],
@@ -299,6 +314,7 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
+          controller: weigth,
           keyboardType: TextInputType.emailAddress,
           style: TextStyle(
               fontSize: 16,
@@ -326,6 +342,7 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
+          controller: width1,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.emailAddress,
           style: TextStyle(
@@ -354,6 +371,7 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
+          controller: width2,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.emailAddress,
           style: TextStyle(
@@ -382,6 +400,7 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
+          controller: heigth,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.emailAddress,
           style: TextStyle(
