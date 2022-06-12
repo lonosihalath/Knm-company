@@ -1,4 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:knm/brand/brand_controller.dart';
+import 'package:get/get.dart';
+import 'package:knm/brand/widget.dart';
+import 'package:knm/categories/widget.dart';
+import 'package:knm/signin_signup/callApi.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateOrder extends StatefulWidget {
   const CreateOrder({Key? key}) : super(key: key);
@@ -8,15 +16,36 @@ class CreateOrder extends StatefulWidget {
 }
 
 class _CreateOrderState extends State<CreateOrder> {
-  TextEditingController _controllername = TextEditingController();
-  TextEditingController _controllernamephone = TextEditingController();
-  TextEditingController _controllernameaddress = TextEditingController();
-  TextEditingController _controllerparcel = TextEditingController();
-  TextEditingController _controllertonthang = TextEditingController();
-  TextEditingController _controllerpaithang = TextEditingController();
-  TextEditingController _controllercategories = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    findUser();
+  }
+
+  late var Userid = '';
+  late var Usertoken = '';
+  Future<Null> findUser() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      Usertoken = preferences.getString('token')!;
+      Userid = preferences.getString('id')!;
+    });
+  }
+
+  TextEditingController controllername = TextEditingController();
+  TextEditingController controllernamephonephuhub = TextEditingController();
+  TextEditingController controllernamephonephusong = TextEditingController();
+  TextEditingController controllernameaddressphuhub = TextEditingController();
+  TextEditingController controllernameaddressphusong = TextEditingController();
+  TextEditingController controllerparcel = TextEditingController();
+  TextEditingController controllertonthang = TextEditingController();
+  TextEditingController controllerpaithang = TextEditingController();
+  TextEditingController controllercategories = TextEditingController();
+  TextEditingController controllernumnuk = TextEditingController();
   //TextEditingController _controllercategories = TextEditingController();
-  var currentSelectedValuetel;
+  BranchController branchController = Get.put(BranchController());
+  var currentSelectedValuetelphuhub;
+  var currentSelectedValuetelphusong;
   var currentSelectedValueTonthang;
   var currentSelectedValuepiythang;
   var currentSelectedValuecategories;
@@ -25,27 +54,38 @@ class _CreateOrderState extends State<CreateOrder> {
     "020",
     "030",
   ];
-  static var datasakhaTonthang = [
-    "ພະໄຊ",
-    "ດອນໜູນ",
-    "ຊຽງຄວນ",
-  ];
-  static var datasakhapiythang = [
-    "ພະໄຊ",
-    "ດອນໜູນ",
-    "ຊຽງຄວນ",
-  ];
-  static var categories = [
-    "ເຄື່ອງປະດັບ",
-    "ເຄື່ອງໃຊ້ໄຟຟ້າ",
-    "ເຄື່ອງນຸ່ງຫົ່ມ",
-    "ອຸປະກອນຊ່າງ",
-    "ເຄື່ອງຈັກ",
-    "ເຄື່ອງຈັກ",
-    "ໂທລະສັບ",
-    "ຄອມພີວເຕີ້",
-    "ເຄື່ອງສຳອາງ",
-  ];
+  _insertOrder() async {
+    var data = {
+      'user_id': Userid.toString(),
+      'recipient_id': '1',
+      'original_branch': '1',
+      'destination_branch': '2',
+      'order_date': '3/02/2022',
+      'order_month': 'Februay',
+      'order_year': '2022',
+      'status': "Hello world",
+      'order_items': [
+        {
+          'order_id': '1',
+          'category_id': '1',
+          'parcel_name': 'VutSaDu',
+          'weight': '10',
+          'width': '50',
+          'height': '50'
+        },
+      ]
+    };
+
+    var res = await CallApiOrder().postDataupOrder(
+      data,
+      'order/insert',
+      Usertoken,
+    );
+    var body = json.decode(res.body);
+    print(body);
+  }
+
+  bool status = false;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -54,7 +94,7 @@ class _CreateOrderState extends State<CreateOrder> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(20),
+          preferredSize: const Size.fromHeight(20),
           child: Container(),
         ),
         elevation: 0,
@@ -63,143 +103,229 @@ class _CreateOrderState extends State<CreateOrder> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
               size: 32,
             )),
-        title: Text(
+        title: const Text(
           'ສ້າງໃບບິນດ້ວຍຕົນເອງ',
-          style: TextStyle(
+          style: const TextStyle(
               fontFamily: 'nsl_bold', color: Colors.white, fontSize: 22),
         ),
-        actions: [
-          Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(right: 15),
-            width: 100,
-            decoration: BoxDecoration(
-                color: Color.fromARGB(255, 18, 44, 243),
-                borderRadius: BorderRadius.circular(10)),
-            child: Text('ບັນທຶກ',
-                style: TextStyle(
-                    fontFamily: 'nsl_bold', color: Colors.white, fontSize: 20)),
-          )
-        ],
+        // actions: [
+        //   Container(
+        //     alignment: Alignment.center,
+        //     margin: EdgeInsets.only(right: 15),
+        //     width: 100,
+        //     decoration: BoxDecoration(
+        //         color: Color.fromARGB(255, 18, 44, 243),
+        //         borderRadius: BorderRadius.circular(10)),
+        //     child: Text('ບັນທຶກ',
+        //         style: TextStyle(
+        //             fontFamily: 'nsl_bold', color: Colors.white, fontSize: 20)),
+        //   )
+        //],
       ),
       body: Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('images/bg.png'), fit: BoxFit.cover)),
+          decoration: const BoxDecoration(
+              image: const DecorationImage(
+                  image: const AssetImage('images/bg.png'), fit: BoxFit.cover)),
           child: Center(
             child: SingleChildScrollView(
               child: Container(
-                padding: EdgeInsets.all(20),
-                margin: EdgeInsets.only(top: 120),
+                height: 650,
+                padding: const EdgeInsets.all(20),
+                margin: const EdgeInsets.only(top: 120),
                 width: width,
-   
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(25),
-                        topRight: Radius.circular(25))),
+                        topRight: const Radius.circular(25))),
                 child: Column(
                   children: [
-                    textfield('ຂໍ້ມູນຜູ້ຮັບ'),
-                    SizedBox(height: 5),
-                    name(width),
-                    SizedBox(height: 15),
-                    Container(
-                      width: width,
-                      child: Row(
-                        children: [
-                          selecttel(width),
-                          SizedBox(width: 15),
-                          phone(width)
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    address(width),
-                    SizedBox(height: 15),
-                    textfield('ຂໍ້ມູນພັດສະດຸ'),
-                    SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(width: 2, color: Colors.grey)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                   
-                          Row(
+                    status == false
+                        ? Column(
                             children: [
-                              Radio(
-                                  activeColor: Colors.lightBlue,
-                                  value: 1,
-                                  groupValue: _selectedAddress1,
-                                  toggleable: true,
-                                  onChanged: (int? val) {
-                                    setState(() {
-                                      _selectedAddress1 = val!;
-                                      print(val);
-                                    });
-                                  }),
-                              textfiled2('ພັດສະດຸທົ່ວໄປ'),
+                              textfield('ຂໍ້ມູນຜູ້ສົ່ງ'),
+                              const SizedBox(height: 5),
+                              name(width),
+                              const SizedBox(height: 15),
+                              Container(
+                                width: width,
+                                child: Row(
+                                  children: [
+                                    selecttelphusong(width),
+                                    const SizedBox(width: 15),
+                                    phonephusong(width)
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              addressphuhub(width),
+                              const SizedBox(height: 15),
+                              textfield('ຂໍ້ມູນຜູ້ຮັບ'),
+                              const SizedBox(height: 5),
+                              name(width),
+                              const SizedBox(height: 15),
+                              Container(
+                                width: width,
+                                child: Row(
+                                  children: [
+                                    selecttelphuhub(width),
+                                    const SizedBox(width: 15),
+                                    phonephuhub(width)
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              addressphusong(width),
+                              const SizedBox(height: 15),
                             ],
-                          ),
-                          Row(
+                          )
+                        : Container(),
+                    status == true
+                        ? Column(
                             children: [
-                              Radio(
-                                  activeColor: Colors.lightBlue,
-                                  value: 2,
-                                  groupValue: _selectedAddress1,
-                                  toggleable: true,
-                                  onChanged: (int? val) {
-                                    setState(() {
-                                      _selectedAddress1 = val!;
-                                      print(val);
-                                    });
-                                  }),
-                              textfiled2('ເອກະສານ'),
+                              textfield('ຂໍ້ມູນພັດສະດຸ'),
+                              const SizedBox(height: 10),
+                              namepasadu(width),
+                              // Container(
+                              //   decoration: BoxDecoration(
+                              //       borderRadius: BorderRadius.circular(5),
+                              //       border: Border.all(
+                              //           width: 2, color: Colors.grey)),
+                              //   child: Row(
+                              //     mainAxisAlignment:
+                              //         MainAxisAlignment.spaceBetween,
+                              //     children: [
+                              //       Row(
+                              //         children: [
+                              //           Radio(
+                              //               activeColor: Colors.lightBlue,
+                              //               value: 1,
+                              //               groupValue: _selectedAddress1,
+                              //               toggleable: true,
+                              //               onChanged: (int? val) {
+                              //                 setState(() {
+                              //                   _selectedAddress1 = val!;
+                              //                   print(val);
+                              //                 });
+                              //               }),
+                              //           textfiled2('ພັດສະດຸທົ່ວໄປ'),
+                              //         ],
+                              //       ),
+                              //       Row(
+                              //         children: [
+                              //           Radio(
+                              //               activeColor: Colors.lightBlue,
+                              //               value: 2,
+                              //               groupValue: _selectedAddress1,
+                              //               toggleable: true,
+                              //               onChanged: (int? val) {
+                              //                 setState(() {
+                              //                   _selectedAddress1 = val!;
+                              //                   print(val);
+                              //                 });
+                              //               }),
+                              //           textfiled2('ເອກະສານ'),
+                              //         ],
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
+                              const SizedBox(height: 17),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  selectsakhaTonthang(width),
+                                  selectsakhapiythang(width)
+                                ],
+                              ),
+                              const SizedBox(height: 17),
+                              categorie(width),
+                              const SizedBox(height: 17),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [widthheigth(width), numnuk(width)],
+                              ),
+                              const SizedBox(height: 17),
+                              Container(
+                                width: width,
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(
+                                        width: 1, color: Colors.red)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text('ໝາຍເຫດ',
+                                        style: TextStyle(
+                                            fontFamily: 'nsl_bold',
+                                            fontSize: 20,
+                                            color: Colors.red)),
+                                    const Text(
+                                        'ຄ່າບໍລິການແມ່ນຕ້ອງອິງຕາມການຄິດໄລ່ຕົວຈິງຂອງພະນັກງານ ເຄເອັນເອັມ',
+                                        style: const TextStyle(
+                                            fontFamily: 'nsl_bold',
+                                            fontSize: 14)),
+                                  ],
+                                ),
+                              )
                             ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 17),
+                          )
+                        : Container(),
+                    const SizedBox(height: 30),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: status == true
+                          ? MainAxisAlignment.spaceBetween
+                          : MainAxisAlignment.center,
                       children: [
-                        selectsakhaTonthang(width),
-                        selectsakhapiythang(width)
+                        status == true
+                            ? Container(
+                                width: status == true
+                                    ? width * 0.40
+                                    : width * 0.80,
+                                height: 45,
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            status = false;
+                                          });
+                                        },
+                                        child: const Text(
+                                          'ຍ້ອນກັບ',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white),
+                                        ))))
+                            : const Text(''),
+                        Container(
+                            width: status == true ? width * 0.40 : width * 0.80,
+                            height: 45,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.green),
+                                    onPressed: () {
+                                      setState(() {
+                                        status = true;
+                                      });
+                                      _insertOrder();
+                                    },
+                                    child: const Text(
+                                      'ຢືນຢັນ',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.white),
+                                    )))),
                       ],
-                    ),
-                    SizedBox(height: 17),
-                    categorie(width),
-                    SizedBox(height: 17),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [widthheigth(width), numnuk(width)],
-                    ),
-                    SizedBox(height: 17),
-                    Container(
-                      width: width,
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(width: 1,color: Colors.red)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('ໝາຍເຫດ',
-                              style: TextStyle(
-                                  fontFamily: 'nsl_bold', fontSize: 20,color: Colors.red)),
-                          Text('ຄ່າບໍລິການແມ່ນຕ້ອງອິງຕາມການຄິດໄລ່ຕົວຈິງຂອງພະນັກງານ ເຄເອັນເອັມ',
-                              style: TextStyle(
-                                  fontFamily: 'nsl_bold', fontSize: 14)),
-                        ],
-                      ),
                     )
                   ],
                 ),
@@ -211,8 +337,8 @@ class _CreateOrderState extends State<CreateOrder> {
 
   Padding textfiled2(text) => Padding(
         padding: const EdgeInsets.all(5.0),
-        child:
-            Text(text, style: TextStyle(fontFamily: 'nsl_bold', fontSize: 15)),
+        child: Text(text,
+            style: const TextStyle(fontFamily: 'nsl_bold', fontSize: 15)),
       );
 
   Padding textfield(String text) {
@@ -220,7 +346,8 @@ class _CreateOrderState extends State<CreateOrder> {
       padding: const EdgeInsets.all(5.0),
       child: Row(
         children: [
-          Text(text, style: TextStyle(fontFamily: 'nsl_bold', fontSize: 18)),
+          Text(text,
+              style: const TextStyle(fontFamily: 'nsl_bold', fontSize: 18)),
         ],
       ),
     );
@@ -232,18 +359,19 @@ class _CreateOrderState extends State<CreateOrder> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
+          controller: controllername,
           keyboardType: TextInputType.emailAddress,
           style: TextStyle(
               fontSize: 16,
               fontFamily: 'nsl_bold',
               color: Colors.grey.shade800),
           decoration: InputDecoration(
-            hintText: 'ຊື່ຜູ້ຮັບ',
+            hintText: 'ຊື່ຜູ້ສົ່ງ',
             hintStyle: TextStyle(
                 fontSize: 16,
                 color: Colors.grey.shade600,
                 fontFamily: 'nsl_bold'),
-            fillColor: Color(0xFFF4F6FB),
+            fillColor: const Color(0xFFF4F6FB),
             filled: true,
             border: InputBorder.none,
           ),
@@ -252,7 +380,34 @@ class _CreateOrderState extends State<CreateOrder> {
     );
   }
 
-  Container selecttel(double width) {
+  Container namepasadu(double screen) {
+    return Container(
+      width: screen,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: TextFormField(
+          controller: controllerparcel,
+          keyboardType: TextInputType.emailAddress,
+          style: TextStyle(
+              fontSize: 16,
+              fontFamily: 'nsl_bold',
+              color: Colors.grey.shade800),
+          decoration: InputDecoration(
+            hintText: 'ປ້ອນຊື່ພັດສະດຸ',
+            hintStyle: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+                fontFamily: 'nsl_bold'),
+            fillColor: const Color(0xFFF4F6FB),
+            filled: true,
+            border: InputBorder.none,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container selecttelphuhub(double width) {
     return Container(
       width: width * 0.22,
       child: ClipRRect(
@@ -260,7 +415,7 @@ class _CreateOrderState extends State<CreateOrder> {
         child: FormField<String>(
           builder: (FormFieldState<String> state) {
             return InputDecorator(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   fillColor: Color(0xFFF4F6FB),
                   filled: true,
                   border: InputBorder.none),
@@ -277,13 +432,13 @@ class _CreateOrderState extends State<CreateOrder> {
                         fontFamily: 'nsl_bold',
                         color: Colors.grey.shade600),
                   ),
-                  value: currentSelectedValuetel,
+                  value: currentSelectedValuetelphuhub,
                   isDense: true,
                   onChanged: (newValue) {
                     setState(() {
-                      currentSelectedValuetel = newValue;
+                      currentSelectedValuetelphuhub = newValue;
                     });
-                    print(currentSelectedValuetel);
+                    print(currentSelectedValuetelphuhub);
                   },
                   items: tel.map((String value) {
                     return DropdownMenuItem<String>(
@@ -300,19 +455,68 @@ class _CreateOrderState extends State<CreateOrder> {
     );
   }
 
-  Container phone(double screen) {
+  Container selecttelphusong(double width) {
+    return Container(
+      width: width * 0.22,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: FormField<String>(
+          builder: (FormFieldState<String> state) {
+            return InputDecorator(
+              decoration: const InputDecoration(
+                  fillColor: Color(0xFFF4F6FB),
+                  filled: true,
+                  border: InputBorder.none),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  style: TextStyle(
+                      fontSize: 16.0,
+                      fontFamily: 'nsl_bold',
+                      color: Colors.grey.shade800),
+                  hint: Text(
+                    tel[0],
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'nsl_bold',
+                        color: Colors.grey.shade600),
+                  ),
+                  value: currentSelectedValuetelphusong,
+                  isDense: true,
+                  onChanged: (newValue) {
+                    setState(() {
+                      currentSelectedValuetelphusong = newValue;
+                    });
+                    print(currentSelectedValuetelphusong);
+                  },
+                  items: tel.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Container phonephusong(double screen) {
     return Container(
       width: screen * 0.60,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
+          controller: controllernamephonephusong,
           keyboardType: TextInputType.number,
           style: TextStyle(
               fontSize: 16,
               fontFamily: 'nsl_bold',
               color: Colors.grey.shade800),
-          decoration: InputDecoration(
-            fillColor: Color(0xFFF4F6FB),
+          decoration: const InputDecoration(
+            fillColor: const Color(0xFFF4F6FB),
             filled: true,
             border: InputBorder.none,
           ),
@@ -321,20 +525,70 @@ class _CreateOrderState extends State<CreateOrder> {
     );
   }
 
-  Container address(double screen) {
+  Container phonephuhub(double screen) {
+    return Container(
+      width: screen * 0.60,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: TextFormField(
+          controller: controllernamephonephuhub,
+          keyboardType: TextInputType.number,
+          style: TextStyle(
+              fontSize: 16,
+              fontFamily: 'nsl_bold',
+              color: Colors.grey.shade800),
+          decoration: const InputDecoration(
+            fillColor: const Color(0xFFF4F6FB),
+            filled: true,
+            border: InputBorder.none,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container addressphuhub(double screen) {
     return Container(
       width: screen,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
+          controller: controllernameaddressphuhub,
           keyboardType: TextInputType.number,
           style: TextStyle(
               fontSize: 16,
               fontFamily: 'nsl_bold',
               color: Colors.grey.shade800),
           decoration: InputDecoration(
-            fillColor: Color(0xFFF4F6FB),
+            fillColor: const Color(0xFFF4F6FB),
             hintText: 'ທີ່ຢູ່ປັດຈຸບັນຜູ້ຮັບ',
+            hintStyle: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+                fontFamily: 'nsl_bold'),
+            filled: true,
+            border: InputBorder.none,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container addressphusong(double screen) {
+    return Container(
+      width: screen,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: TextFormField(
+          controller: controllernameaddressphusong,
+          keyboardType: TextInputType.number,
+          style: TextStyle(
+              fontSize: 16,
+              fontFamily: 'nsl_bold',
+              color: Colors.grey.shade800),
+          decoration: InputDecoration(
+            fillColor: const Color(0xFFF4F6FB),
+            hintText: 'ທີ່ຢູ່ປັດຈຸບັນຜູ້ສົ່ງ',
             hintStyle: TextStyle(
                 fontSize: 16,
                 color: Colors.grey.shade600,
@@ -355,7 +609,7 @@ class _CreateOrderState extends State<CreateOrder> {
         child: FormField<String>(
           builder: (FormFieldState<String> state) {
             return InputDecorator(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   fillColor: Color(0xFFF4F6FB),
                   filled: true,
                   border: InputBorder.none),
@@ -380,7 +634,7 @@ class _CreateOrderState extends State<CreateOrder> {
                     });
                     print(currentSelectedValueTonthang);
                   },
-                  items: datasakhaTonthang.map((String value) {
+                  items: sakha.map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -403,7 +657,7 @@ class _CreateOrderState extends State<CreateOrder> {
         child: FormField<String>(
           builder: (FormFieldState<String> state) {
             return InputDecorator(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   fillColor: Color(0xFFF4F6FB),
                   filled: true,
                   border: InputBorder.none),
@@ -428,7 +682,7 @@ class _CreateOrderState extends State<CreateOrder> {
                     });
                     print(currentSelectedValuepiythang);
                   },
-                  items: datasakhapiythang.map((String value) {
+                  items: sakha.map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -451,7 +705,7 @@ class _CreateOrderState extends State<CreateOrder> {
         child: FormField<String>(
           builder: (FormFieldState<String> state) {
             return InputDecorator(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   fillColor: Color(0xFFF4F6FB),
                   filled: true,
                   border: InputBorder.none),
@@ -508,7 +762,7 @@ class _CreateOrderState extends State<CreateOrder> {
                 fontSize: 16,
                 color: Colors.grey.shade600,
                 fontFamily: 'nsl_bold'),
-            fillColor: Color(0xFFF4F6FB),
+            fillColor: const Color(0xFFF4F6FB),
             filled: true,
             border: InputBorder.none,
           ),
@@ -523,6 +777,7 @@ class _CreateOrderState extends State<CreateOrder> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
+          controller: controllernumnuk,
           keyboardType: TextInputType.emailAddress,
           style: TextStyle(
               fontSize: 16,
@@ -534,7 +789,7 @@ class _CreateOrderState extends State<CreateOrder> {
                 fontSize: 16,
                 color: Colors.grey.shade600,
                 fontFamily: 'nsl_bold'),
-            fillColor: Color(0xFFF4F6FB),
+            fillColor: const Color(0xFFF4F6FB),
             filled: true,
             border: InputBorder.none,
           ),

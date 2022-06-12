@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:knm/brand/brand_controller.dart';
 import 'package:knm/screen/callcenter/callcenter.dart';
+import 'package:get/get.dart';
+import 'package:knm/screen/home/detail_sakha.dart';
 
 class SskhaData_Screen extends StatefulWidget {
   const SskhaData_Screen({Key? key}) : super(key: key);
@@ -9,6 +12,7 @@ class SskhaData_Screen extends StatefulWidget {
 }
 
 class _SskhaData_ScreenState extends State<SskhaData_Screen> {
+  BranchController branchController = Get.put(BranchController());
   var currentSelectedValuecity;
   var currentSelectedValuestate;
 
@@ -52,15 +56,62 @@ class _SskhaData_ScreenState extends State<SskhaData_Screen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            textfield('ເມືອງ'),
-            SizedBox(height: 10),
-            selectcity(width),
-            SizedBox(height: 10),
-            textfield('ບ້ານ'),
-            SizedBox(height: 10),
-            selectstate(width),
-            SizedBox(height: 20),
-            buttonregister(width)
+            Column(
+              children: List.generate(
+                  branchController.statetList.length,
+                  (index) => GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => Detail_Sakha(data: branchController.statetList[index],)));
+                    },
+                    child: Container(
+                          margin: EdgeInsets.all(5),
+                          padding: EdgeInsets.all(5),
+                          width: width,
+                          height: 80,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.grey.shade100),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 60,
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(30),
+                                        child: Image.asset('images/sakha.png')),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.all(10),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            branchController.statetList[index].name,
+                                            style: const TextStyle(
+                                                fontFamily: 'nsl_bold',
+                                                fontSize: 18,
+                                                color: Colors.black)),
+                                        Text(branchController.statetList[index].tel,
+                                            style: const TextStyle(
+                                                fontFamily: 'nsl_light',
+                                                fontSize: 16,
+                                                color: Colors.black)),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                width: 30,
+                                child: Image.asset('images/right.png', color: Colors.blue,),
+                              )
+                            ],
+                          ),
+                        ),
+                  )),
+            )
           ],
         ),
       ),

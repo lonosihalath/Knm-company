@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:knm/brand/brand_controller.dart';
+import 'package:knm/categories/comtroller.dart';
 import 'package:knm/screen/home/create_order.dart';
 import 'package:knm/screen/home/dataPhuhub.dart';
 import 'package:knm/screen/home/datasakha.dart';
@@ -60,6 +62,8 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
   }
 
   final Controller controller = Get.find<Controller>();
+  BranchController branchController = Get.put(BranchController());
+  CategoriesController categoriesController = Get.put(CategoriesController());
 
   @override
   Widget build(BuildContext context) {
