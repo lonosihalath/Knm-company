@@ -9,9 +9,12 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:knm/brand/brand_controller.dart';
 import 'package:knm/callapi/OTPController.dart';
 import 'package:knm/callapi/api_signup_signin.dart';
+import 'package:knm/categories/comtroller.dart';
 import 'package:knm/screen/home/homepage.dart';
+import 'package:knm/screen/order/order_controller.dart';
 import 'package:knm/signin_signup/user_account/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -44,15 +47,19 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
   TextEditingController password2 = TextEditingController();
   TextEditingController cfpassword = TextEditingController();
   final Controller controller = Get.find<Controller>();
+  OrderShowController orderShowController = Get.put(OrderShowController());
+  CategoriesController categoriesController = Get.put(CategoriesController());
+  BranchController branchController = Get.put(BranchController());
 
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
   _register() async {
     var data = {
       'name': name.text,
+      'surname': surname.text,
       'email': email2.text,
       'phone': '56677603',
-      'birth': 'ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ',
+      'birth': '18',
       'gender': 'ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ',
       'password': password2.text,
       'password_confirmation': password2.text,
@@ -97,6 +104,7 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
       localStorage.setString('id', json.encode(body['user']['id']));
       controller.onInit();
       Navigator.pop(context);
+      orderShowController.onInit();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomePage_Screen()));
 
@@ -233,7 +241,7 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
                           },
                           child: Text('ລົງທະບຽນ',
                               style: TextStyle(
-                                  fontFamily: 'nsl_bold', 
+                                  fontFamily: 'nsl_bold',
                                   color: status == false
                                       ? Colors.white
                                       : Colors.white60,
@@ -261,58 +269,58 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
                             statepassword1 == true
                                 ? varidator('ປ້ອນລະຫັດຜ່ານ')
                                 : varidator(''),
-                            Column(
-        children: [
-          SizedBox(height: 50),
-          SizedBox(
-            height: 60,
-            width: 400,
-            child: CountryCodePicker(
-              onChanged: (country) {
-                setState(() {
-                  dialDodeDigis = country.dialCode!;
-                });
-              },
-              initialSelection: "Laos",
-              showCountryOnly: false,
-              showOnlyCountryWhenClosed: false,
-              favorite: ["+856", "laos"],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 10, right: 10, left: 10),
-            child: TextField(
-              maxLength: 10,
-              decoration: InputDecoration(
-                  hintText: "Phone Number",
-                  prefix: Padding(
-                      child: Text(dialDodeDigis + '20'),
-                      padding: EdgeInsets.all(4))),
-              keyboardType: TextInputType.number,
-              controller: _controller,
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.all(15),
-            width: double.infinity,
-            child: ElevatedButton(
-              child: Text(
-                'Next',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => OTP_Screen(
-                            phone: _controller.text,
-                            codeDigits: dialDodeDigis)));
-              },
-            ),
-          )
-        ],
-      ),
+                            //                       Column(
+                            //   children: [
+                            //     SizedBox(height: 50),
+                            //     SizedBox(
+                            //       height: 60,
+                            //       width: 400,
+                            //       child: CountryCodePicker(
+                            //         onChanged: (country) {
+                            //           setState(() {
+                            //             dialDodeDigis = country.dialCode!;
+                            //           });
+                            //         },
+                            //         initialSelection: "Laos",
+                            //         showCountryOnly: false,
+                            //         showOnlyCountryWhenClosed: false,
+                            //         favorite: ["+856", "laos"],
+                            //       ),
+                            //     ),
+                            //     Container(
+                            //       margin: EdgeInsets.only(top: 10, right: 10, left: 10),
+                            //       child: TextField(
+                            //         maxLength: 10,
+                            //         decoration: InputDecoration(
+                            //             hintText: "Phone Number",
+                            //             prefix: Padding(
+                            //                 child: Text(dialDodeDigis + '20'),
+                            //                 padding: EdgeInsets.all(4))),
+                            //         keyboardType: TextInputType.number,
+                            //         controller: _controller,
+                            //       ),
+                            //     ),
+                            //     Container(
+                            //       margin: EdgeInsets.all(15),
+                            //       width: double.infinity,
+                            //       child: ElevatedButton(
+                            //         child: Text(
+                            //           'Next',
+                            //           style:
+                            //               TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            //         ),
+                            //         onPressed: () {
+                            //           Navigator.push(
+                            //               context,
+                            //               MaterialPageRoute(
+                            //                   builder: (context) => OTP_Screen(
+                            //                       phone: _controller.text,
+                            //                       codeDigits: dialDodeDigis)));
+                            //         },
+                            //       ),
+                            //     )
+                            //   ],
+                            // ),
                             forgetPassword(),
                             buttonLogingoogle(width, height),
                             buttonLogin(width),
@@ -495,17 +503,21 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
               'Accept': 'application/json',
             });
             var res = json.decode(respone.body);
-            
-              SharedPreferences localStorage = await SharedPreferences.getInstance();
-              localStorage.setString('token', res['token']);
-              localStorage.setString('id', json.encode(res['user']['id']));
-              controller.onInit();
-               Timer(Duration(seconds: 2), () {
-                Navigator.pop(context);
-                Navigator.pushReplacement(
-                  context, MaterialPageRoute(builder: (context) => HomePage_Screen()));
-              });
-            
+
+            SharedPreferences localStorage =
+                await SharedPreferences.getInstance();
+            localStorage.setString('token', res['token']);
+            localStorage.setString('id', json.encode(res['user']['id']));
+            controller.onInit();
+            orderShowController.onInit();
+            categoriesController.onInit();
+            branchController.onInit();
+            Timer(Duration(seconds: 2), () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => HomePage_Screen()));
+            });
+
             print('respone : $res');
           } catch (error) {
             print(error);

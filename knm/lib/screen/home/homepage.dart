@@ -3,10 +3,13 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:knm/brand/brand_controller.dart';
 import 'package:knm/categories/comtroller.dart';
-import 'package:knm/screen/home/create_order.dart';
+import 'package:knm/screen/order/create_order.dart';
 import 'package:knm/screen/home/dataPhuhub.dart';
 import 'package:knm/screen/home/datasakha.dart';
 import 'package:knm/screen/kitlailakha/kidlailakha.dart';
+import 'package:knm/screen/order/detail_order.dart';
+import 'package:knm/screen/order/order_controller.dart';
+import 'package:knm/screen/order/show_order_model.dart';
 import 'package:knm/screen/tackking/order_Tacking.dart';
 import 'package:knm/signin_signup/signIN_signUp.dart';
 import 'package:knm/signin_signup/user_account/controller.dart';
@@ -29,8 +32,8 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
   bool statussubTab2 = false;
   late List<String> textmain = ['ໜ້າຫຼັກ', 'ພັດສະດຸ', 'ຊ່ວຍເຫຼືອ'];
   late List<String> textmain1 = ['ຂ້ອຍຈັດສົ່ງ', 'ສົ່ງໃຫ້ຂ້ອຍ'];
-  late List<String> textmain2 = ['ສຳລັງຈັດສົ່ງ', 'ສົ່ງສຳເລັດ', 'ບິນສ້າງເອງ'];
-  late List<String> textmain3 = ['ສຳລັງຈັດສົ່ງ', 'ສົ່ງສຳເລັດ'];
+  late List<String> textmain2 = ['ກຳລັງຈັດສົ່ງ', 'ສົ່ງສຳເລັດ'];
+  late List<String> textmain3 = ['ກຳລັງຈັດສົ່ງ', 'ສົ່ງສຳເລັດ'];
   late String texttap = '';
   final List<String> imgList = ['images/lazada3.jpg', 'images/lazada4.jpg'];
   late int selected = 0;
@@ -43,9 +46,10 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
     super.initState();
     findUser();
     controller.onInit();
+    orderShowController.onInit();
   }
 
-  late var Usertoken = '';
+  var Usertoken;
   Future<Null> findUser() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
@@ -64,6 +68,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
   final Controller controller = Get.find<Controller>();
   BranchController branchController = Get.put(BranchController());
   CategoriesController categoriesController = Get.put(CategoriesController());
+  OrderShowController orderShowController = Get.put(OrderShowController());
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +113,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                           if (texttap == 'ພັດສະດຸ') {
                             setState(() {
                               statusTab2 = true;
+                              orderShowController.onInit();
                             });
                           } else {
                             setState(() {
@@ -211,21 +217,20 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Usertoken == ''
-                                            ? Signin_SignUP()
-                                            : User_Profile()));
-                              },
-                              child: Container(
-                                      width: 60,
-                                      child: Image.asset('images/profile.png'))
-                            )
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Usertoken == ''
+                                              ? Signin_SignUP()
+                                              : User_Profile()));
+                                },
+                                child: Container(
+                                    width: 60,
+                                    child: Image.asset('images/profile.png')))
                           ],
                         ),
-                      ),     
+                      ),
                       Container(
                         margin: EdgeInsets.all(10),
                         padding: EdgeInsets.all(20),
@@ -292,15 +297,15 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                     },
                                     child: item_main(
                                         'images/car.png', 'Prackink')),
-                                GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) => Phuhub_Screen()));
-                                    },
-                                    child: item_main(
-                                        'images/preson.png', 'ຂໍ້ມູນຜູ້ຮັບ')),
+                                // GestureDetector(
+                                //     onTap: () {
+                                //       Navigator.push(
+                                //           context,
+                                //           MaterialPageRoute(
+                                //               builder: (_) => Phuhub_Screen()));
+                                //     },
+                                //     child: item_main(
+                                //         'images/preson.png', 'ຂໍ້ມູນຜູ້ຮັບ')),
                               ],
                             ),
                           ],
@@ -312,57 +317,57 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                     ? Container(
                         child: Column(
                         children: [
-                          Container(
-                            padding: EdgeInsets.all(5),
-                            width: width * 0.95,
-                            height: 50,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.white,
-                                border: Border.all(
-                                    width: 2, color: Color(0xFFFEBA00))),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: List.generate(
-                                  textmain1.length,
-                                  (index) => GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            selected1 = index;
-                                            statussubTab1 = !statussubTab1;
-                                            statussubTab2 = !statussubTab2;
-                                          });
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              width: width * 0.45,
-                                              height: 35,
-                                              alignment: Alignment.center,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  color: selected1 == index
-                                                      ? Color(0xff1380F7)
-                                                      : Colors.white),
-                                              child: Text(
-                                                textmain1[index],
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontFamily: 'nsl_bold',
-                                                    color: selected1 == index
-                                                        ? Colors.white
-                                                        : Color(0xFF1380F7)),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )),
-                            ),
-                          ),
-                          SizedBox(height: 15),
-                          inputIdorder(width),
-                          SizedBox(height: 35),
+                          // Container(
+                          //   padding: EdgeInsets.all(5),
+                          //   width: width * 0.95,
+                          //   height: 50,
+                          //   decoration: BoxDecoration(
+                          //       borderRadius: BorderRadius.circular(5),
+                          //       color: Colors.white,
+                          //       border: Border.all(
+                          //           width: 2, color: Color(0xFFFEBA00))),
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //     children: List.generate(
+                          //         textmain1.length,
+                          //         (index) => GestureDetector(
+                          //               onTap: () {
+                          //                 setState(() {
+                          //                   selected1 = index;
+                          //                   statussubTab1 = !statussubTab1;
+                          //                   statussubTab2 = !statussubTab2;
+                          //                 });
+                          //               },
+                          //               child: Column(
+                          //                 children: [
+                          //                   Container(
+                          //                     width: width * 0.45,
+                          //                     height: 35,
+                          //                     alignment: Alignment.center,
+                          //                     decoration: BoxDecoration(
+                          //                         borderRadius:
+                          //                             BorderRadius.circular(5),
+                          //                         color: selected1 == index
+                          //                             ? Color(0xff1380F7)
+                          //                             : Colors.white),
+                          //                     child: Text(
+                          //                       textmain1[index],
+                          //                       style: TextStyle(
+                          //                           fontSize: 18,
+                          //                           fontFamily: 'nsl_bold',
+                          //                           color: selected1 == index
+                          //                               ? Colors.white
+                          //                               : Color(0xFF1380F7)),
+                          //                     ),
+                          //                   ),
+                          //                 ],
+                          //               ),
+                          //             )),
+                          //   ),
+                          // ),
+                          //SizedBox(height: 15),
+                          //inputIdorder(width),
+                          //SizedBox(height: 35),
                           statussubTab1 == true
                               ? Container(
                                   padding: EdgeInsets.all(5),
@@ -377,6 +382,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                               onTap: () {
                                                 setState(() {
                                                   selected2 = index;
+                                                  orderShowController.onInit();
                                                 });
                                               },
                                               child: Column(
@@ -467,32 +473,95 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                       border: Border.all(
                                           width: 2, color: Color(0xFFFEBA00)))),
                           SizedBox(height: 15),
-                          Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: Colors.white,
-                                border: Border.all(
-                                    width: 3, color: Color(0xFFFEBA00))),
-                            width: width * 0.95,
-                            height: 350,
-                            child: Column(
-                              children: [
-                                SizedBox(height: 25),
-                                Container(
+                          SingleChildScrollView(
+                            child: Container(
+                              padding: EdgeInsets.only(left: 10, right: 10),
+
+                              ///margin: EdgeInsets.only(bottom: 200),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
                                   color: Colors.white,
-                                  width: 110,
-                                  height: 110,
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(55),
-                                      child: Image.asset('images/logo.jpeg')),
-                                ),
-                                SizedBox(height: 10),
-                                Text('ບໍ່ມີຂໍ້ມູນ',
-                                    style: TextStyle(
-                                        fontFamily: 'nsl_bold',
-                                        color: Colors.black,
-                                        fontSize: 18)),
-                              ],
+                                  border: Border.all(
+                                      width: 3, color: Color(0xFFFEBA00))),
+                              width: width * 0.95,
+                              height: 550,
+                              child: SingleChildScrollView(
+                                  child: Column(
+                                children: [
+                                  Usertoken != null
+                                      ? Column(
+                                          children: [
+                                            selected2.toInt() == 0
+                                                ? showorder(
+                                                    width,
+                                                    orderShowController
+                                                        .statetList
+                                                        .where((p0) =>
+                                                            p0.attributes!
+                                                                .status
+                                                                .toString() ==
+                                                            'Pending')
+                                                        .toList(),
+                                                    Colors.orange)
+                                                : selected2.toInt() == 1
+                                                    ? showorder(
+                                                        width,
+                                                        orderShowController
+                                                            .statetList
+                                                            .where((p0) =>
+                                                                p0.attributes!
+                                                                    .status
+                                                                    .toString() ==
+                                                                'Processing')
+                                                            .toList(),
+                                                        Colors.green)
+                                                    : selected2.toInt() == 2
+                                                        ? Column()
+                                                        : Container(),
+                                          ],
+                                        )
+                                      : Column(
+                                          children: [
+                                            SizedBox(height: 100),
+                                            Text('ທ່ານຍັງບໍ່ໄດ້ເຂົ້າສູ່ລະບົບ',
+                                                style: TextStyle(
+                                                    color: Colors.grey.shade800,
+                                                    fontSize: 25,
+                                                    fontFamily: 'nsl_regular')),
+                                            SizedBox(height: 5),
+                                            Text('ກະລຸນາເຂົ້າສູ່ລະບົບ',
+                                                style: TextStyle(
+                                                    color: Colors.grey.shade800,
+                                                    fontSize: 15,
+                                                    fontFamily: 'nsl_regular')),
+                                            SizedBox(height: 20),
+                                            Container(
+                                              width: 280,
+                                              height: 50,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(25),
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                Signin_SignUP()));
+                                                  },
+                                                  child: Text('ເຂົ້າສູ່ລະບົບ',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 18,
+                                                          fontFamily:
+                                                              'nsl_bold')),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                ],
+                              )),
                             ),
                           )
                         ],
@@ -621,6 +690,108 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
           ),
         ),
       ),
+    );
+  }
+
+  Column showorder(double width, List<OrdershowModel> ordershowModel, color) {
+    return Column(
+      children: [
+        SizedBox(height: 25),
+        ordershowModel.length.toInt() != 0 && ordershowModel.isNotEmpty
+            ? Obx(() {
+                if (orderShowController.isLoading.value)
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                else {
+                  return Column(
+                      children: List.generate(
+                          ordershowModel.length,
+                          (index) => Stack(
+                                children: [
+                                  GestureDetector(
+                                    onTap: (){
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DetailOrder(
+                                                  idrecipient:ordershowModel[index].attributes!.recipientId.toString(),
+                                                  idorder:ordershowModel[index].id.toString(),
+                                                  tonthang:ordershowModel[index].attributes!.originalBranch.toString(),
+                                                  piythang:ordershowModel[index].attributes!.destinationBranch.toString(),
+                                                  orderItem:ordershowModel[index].attributes!.orderItem!.toList(),
+                                                  idcategories:ordershowModel[index].attributes!.orderItem![0].attribute!.categoryId.toString(),
+                                                  )));
+                                    },
+                                    child: Container(
+                                        padding: EdgeInsets.all(10),
+                                        margin: EdgeInsets.only(bottom: 10),
+                                        width: width,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            color: Colors.grey.shade200),
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text('id: ' +
+                                                  ordershowModel[index]
+                                                      .id
+                                                      .toString()),
+                                              Text('name: ' +
+                                                  ordershowModel[index]
+                                                      .attributes!
+                                                      .orderItem![0]
+                                                      .attribute!
+                                                      .parcelName
+                                                      .toString()),
+                                            ])),
+                                  ),
+                                  Positioned(
+                                      top: 10,
+                                      right: 10,
+                                      child: Container(
+                                          alignment: Alignment.center,
+                                          width: 100,
+                                          height: 30,
+                                          child: Text(
+                                            ordershowModel[index]
+                                                .attributes!
+                                                .status
+                                                .toString(),
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          decoration: BoxDecoration(
+                                              color: color,
+                                              borderRadius:
+                                                  BorderRadius.circular(10))))
+                                ],
+                              )));
+                }
+              })
+            : Column(
+                children: [
+                  Container(
+                    color: Colors.white,
+                    width: 110,
+                    height: 110,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(55),
+                        child: Image.asset('images/logo.jpeg')),
+                  ),
+                  SizedBox(height: 10),
+                  Text('ບໍ່ມີຂໍ້ມູນ',
+                      style: TextStyle(
+                          fontFamily: 'nsl_bold',
+                          color: Colors.black,
+                          fontSize: 18)),
+                ],
+              ),
+      ],
     );
   }
 

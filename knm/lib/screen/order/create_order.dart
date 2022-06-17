@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:knm/brand/brand_controller.dart';
 import 'package:get/get.dart';
 import 'package:knm/brand/widget.dart';
+import 'package:knm/categories/comtroller.dart';
 import 'package:knm/categories/widget.dart';
+import 'package:knm/screen/order/order_controller.dart';
 import 'package:knm/signin_signup/callApi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,7 +35,10 @@ class _CreateOrderState extends State<CreateOrder> {
     });
   }
 
-  TextEditingController controllername = TextEditingController();
+  TextEditingController controllernamephuhub = TextEditingController();
+  TextEditingController controllersurnamephuhub = TextEditingController();
+  TextEditingController controllernamephusong = TextEditingController();
+  TextEditingController controllersurnamephusong = TextEditingController();
   TextEditingController controllernamephonephuhub = TextEditingController();
   TextEditingController controllernamephonephusong = TextEditingController();
   TextEditingController controllernameaddressphuhub = TextEditingController();
@@ -42,8 +48,11 @@ class _CreateOrderState extends State<CreateOrder> {
   TextEditingController controllerpaithang = TextEditingController();
   TextEditingController controllercategories = TextEditingController();
   TextEditingController controllernumnuk = TextEditingController();
+  TextEditingController controllerwidthheight = TextEditingController();
   //TextEditingController _controllercategories = TextEditingController();
   BranchController branchController = Get.put(BranchController());
+  OrderShowController orderShowController = Get.put(OrderShowController());
+  CategoriesController categoriesController = Get.put(CategoriesController());
   var currentSelectedValuetelphuhub;
   var currentSelectedValuetelphusong;
   var currentSelectedValueTonthang;
@@ -54,40 +63,134 @@ class _CreateOrderState extends State<CreateOrder> {
     "020",
     "030",
   ];
+  var senderid;
+  var recipientid;
+
+    DateTime selectedDate = DateTime.now();
+
   _insertOrder() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var token = preferences.getString('token')!;
+    var id = preferences.getString('id')!;
+    ////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
     var data = {
-      'user_id': Userid.toString(),
-      'recipient_id': '1',
-      'original_branch': '1',
-      'destination_branch': '2',
-      'order_date': '3/02/2022',
-      'order_month': 'Februay',
-      'order_year': '2022',
-      'status': "Hello world",
-      'order_items': [
+      "user_id": id,
+      "sender_id": senderid.toString(),
+      "recipient_id": recipientid.toString(),
+      "original_branch": idbranchtonthanhg,
+      "destination_branch": idbranchtonpithang,
+      "order_date": DateFormat('dd/MM/yyyy').format(selectedDate),
+      "order_month":  DateFormat('MM').format(selectedDate),
+      "order_year": DateFormat('yyyy').format(selectedDate),
+      "status": "Hello world",
+      "order_items": [
         {
-          'order_id': '1',
-          'category_id': '1',
-          'parcel_name': 'VutSaDu',
-          'weight': '10',
-          'width': '50',
-          'height': '50'
+          "category_id": idcategory,
+          "parcel_name": controllerparcel.text,
+          "weight": controllernumnuk.text,
+          "width_height": controllerwidthheight.text,
         },
       ]
     };
 
-    var res = await CallApiOrder().postDataupOrder(
+    var resorder = await CallApiOrder().postDataupOrder(
       data,
-      'order/insert',
-      Usertoken,
+      'insert',
+      token,
     );
-    var body = json.decode(res.body);
-    print(body);
+    print('Response status: ${resorder.body}');
+    orderShowController.onInit();
+  }
+
+  _insertphuhub() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var token = preferences.getString('token')!;
+    var id = preferences.getString('id')!;
+    var dataphuhub = {
+      "recipient_name": controllernamephuhub.text,
+      "recipient_surname": controllersurnamephuhub.text,
+      "recipient_tel": controllernamephonephuhub.text,
+      "recipient_address": controllernameaddressphuhub.text,
+    };
+
+    var res = await CallApiOrder().postDataphuhub(
+      dataphuhub,
+      'insert',
+      token,
+    );
+    var json = jsonDecode(res.body);
+    print('Response status: ${json['user']['id']}');
+    setState(() {
+      recipientid = json['user']['id'];
+    });
+    //print(res.body['user']['id']);
+    //orderShowController.onInit();
+  }
+
+  _insertphusong() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var token = preferences.getString('token')!;
+    var id = preferences.getString('id')!;
+    var datapuhsong = {
+      "sender_name": controllernamephusong.text,
+      "sender_surname": controllersurnamephusong.text,
+      "sender_tel": controllernamephonephusong.text,
+      "sender_address": controllernameaddressphusong.text,
+    };
+
+    var res = await CallApiOrder().postDataphusong(
+      datapuhsong,
+      'insert',
+      token,
+    );
+    var json = jsonDecode(res.body);
+    print('Response status: ${res.body}');
+    setState(() {
+      senderid = json['user']['id'];
+      print(senderid);
+      _insertOrder();
+    });
+    //orderShowController.onInit();
   }
 
   bool status = false;
+  var idcategory;
+  var idbranchtonthanhg;
+  var idbranchtonpithang;
   @override
   Widget build(BuildContext context) {
+    ////////////////////////////////////////////////////////////////////////////////
+    List.generate(
+        categoriesController.statetList.length,
+        (index) => categoriesController.statetList[index].name ==
+                currentSelectedValuecategories
+            ? setState(() {
+                idcategory = categoriesController.statetList[index].id;
+                print(idcategory);
+              })
+            : print('0'));
+    ////////////////////////////////////////////////////////////////////////////////
+    List.generate(
+       branchController.statetList.length,
+        (index) => branchController.statetList[index].name ==
+                currentSelectedValueTonthang
+            ? setState(() {
+                idbranchtonthanhg = branchController.statetList[index].id;
+                print(idbranchtonthanhg);
+              })
+            : print('0'));
+    ////////////////////////////////////////////////////////////////////////////////
+    List.generate(
+       branchController.statetList.length,
+        (index) => branchController.statetList[index].name ==
+                currentSelectedValuepiythang
+            ? setState(() {
+                idbranchtonpithang = branchController.statetList[index].id;
+                print(idbranchtonpithang);
+              })
+            : print('0'));
+    ////////////////////////////////////////////////////////////////////////////////
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -109,7 +212,7 @@ class _CreateOrderState extends State<CreateOrder> {
               size: 32,
             )),
         title: const Text(
-          'ສ້າງໃບບິນດ້ວຍຕົນເອງ',
+          'ຟາກເຄື່ອງດ້ວຍຕົນເອງ',
           style: const TextStyle(
               fontFamily: 'nsl_bold', color: Colors.white, fontSize: 22),
         ),
@@ -134,200 +237,168 @@ class _CreateOrderState extends State<CreateOrder> {
           child: Center(
             child: SingleChildScrollView(
               child: Container(
-                height: 650,
-                padding: const EdgeInsets.all(20),
-                margin: const EdgeInsets.only(top: 120),
+                height: 690,
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, top: 20, bottom: 30),
+                margin: const EdgeInsets.only(top: 100),
                 width: width,
                 decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(25),
                         topRight: const Radius.circular(25))),
-                child: Column(
-                  children: [
-                    status == false
-                        ? Column(
-                            children: [
-                              textfield('ຂໍ້ມູນຜູ້ສົ່ງ'),
-                              const SizedBox(height: 5),
-                              name(width),
-                              const SizedBox(height: 15),
-                              Container(
-                                width: width,
-                                child: Row(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      status == false
+                          ? Column(
+                              children: [
+                                textfield('ຂໍ້ມູນຜູ້ສົ່ງ'),
+                                const SizedBox(height: 5),
+                                namephusong(width),
+                                const SizedBox(height: 15),
+                                surnamephusong(width),
+                                const SizedBox(height: 15),
+                                Container(
+                                  width: width,
+                                  child: Row(
+                                    children: [
+                                      selecttelphusong(width),
+                                      const SizedBox(width: 15),
+                                      phonephusong(width)
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 15),
+                                addressphusong(width),
+                                const SizedBox(height: 15),
+                                textfield('ຂໍ້ມູນຜູ້ຮັບ'),
+                                const SizedBox(height: 5),
+                                namephuhub(width),
+                                const SizedBox(height: 15),
+                                surnamephuhub(width),
+                                const SizedBox(height: 15),
+                                Container(
+                                  width: width,
+                                  child: Row(
+                                    children: [
+                                      selecttelphuhub(width),
+                                      const SizedBox(width: 15),
+                                      phonephuhub(width)
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 15),
+                                addressphuhub(width),
+                                const SizedBox(height: 15),
+                              ],
+                            )
+                          : Container(),
+                      status == true
+                          ? Column(
+                              children: [
+                                textfield('ຂໍ້ມູນພັດສະດຸ'),
+                                const SizedBox(height: 10),
+                                namepasadu(width),
+                                const SizedBox(height: 17),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    selecttelphusong(width),
-                                    const SizedBox(width: 15),
-                                    phonephusong(width)
+                                    selectsakhaTonthang(width),
+                                    selectsakhapiythang(width)
                                   ],
                                 ),
-                              ),
-                              const SizedBox(height: 15),
-                              addressphuhub(width),
-                              const SizedBox(height: 15),
-                              textfield('ຂໍ້ມູນຜູ້ຮັບ'),
-                              const SizedBox(height: 5),
-                              name(width),
-                              const SizedBox(height: 15),
-                              Container(
-                                width: width,
-                                child: Row(
-                                  children: [
-                                    selecttelphuhub(width),
-                                    const SizedBox(width: 15),
-                                    phonephuhub(width)
-                                  ],
+                                const SizedBox(height: 17),
+                                categorie(width),
+                                const SizedBox(height: 17),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [widthheigth(width), numnuk(width)],
                                 ),
-                              ),
-                              const SizedBox(height: 15),
-                              addressphusong(width),
-                              const SizedBox(height: 15),
-                            ],
-                          )
-                        : Container(),
-                    status == true
-                        ? Column(
-                            children: [
-                              textfield('ຂໍ້ມູນພັດສະດຸ'),
-                              const SizedBox(height: 10),
-                              namepasadu(width),
-                              // Container(
-                              //   decoration: BoxDecoration(
-                              //       borderRadius: BorderRadius.circular(5),
-                              //       border: Border.all(
-                              //           width: 2, color: Colors.grey)),
-                              //   child: Row(
-                              //     mainAxisAlignment:
-                              //         MainAxisAlignment.spaceBetween,
-                              //     children: [
-                              //       Row(
-                              //         children: [
-                              //           Radio(
-                              //               activeColor: Colors.lightBlue,
-                              //               value: 1,
-                              //               groupValue: _selectedAddress1,
-                              //               toggleable: true,
-                              //               onChanged: (int? val) {
-                              //                 setState(() {
-                              //                   _selectedAddress1 = val!;
-                              //                   print(val);
-                              //                 });
-                              //               }),
-                              //           textfiled2('ພັດສະດຸທົ່ວໄປ'),
-                              //         ],
-                              //       ),
-                              //       Row(
-                              //         children: [
-                              //           Radio(
-                              //               activeColor: Colors.lightBlue,
-                              //               value: 2,
-                              //               groupValue: _selectedAddress1,
-                              //               toggleable: true,
-                              //               onChanged: (int? val) {
-                              //                 setState(() {
-                              //                   _selectedAddress1 = val!;
-                              //                   print(val);
-                              //                 });
-                              //               }),
-                              //           textfiled2('ເອກະສານ'),
-                              //         ],
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                              const SizedBox(height: 17),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  selectsakhaTonthang(width),
-                                  selectsakhapiythang(width)
-                                ],
-                              ),
-                              const SizedBox(height: 17),
-                              categorie(width),
-                              const SizedBox(height: 17),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [widthheigth(width), numnuk(width)],
-                              ),
-                              const SizedBox(height: 17),
-                              Container(
-                                width: width,
-                                padding: const EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border.all(
-                                        width: 1, color: Colors.red)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text('ໝາຍເຫດ',
-                                        style: TextStyle(
-                                            fontFamily: 'nsl_bold',
-                                            fontSize: 20,
-                                            color: Colors.red)),
-                                    const Text(
-                                        'ຄ່າບໍລິການແມ່ນຕ້ອງອິງຕາມການຄິດໄລ່ຕົວຈິງຂອງພະນັກງານ ເຄເອັນເອັມ',
-                                        style: const TextStyle(
-                                            fontFamily: 'nsl_bold',
-                                            fontSize: 14)),
-                                  ],
-                                ),
-                              )
-                            ],
-                          )
-                        : Container(),
-                    const SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: status == true
-                          ? MainAxisAlignment.spaceBetween
-                          : MainAxisAlignment.center,
-                      children: [
-                        status == true
-                            ? Container(
-                                width: status == true
-                                    ? width * 0.40
-                                    : width * 0.80,
-                                height: 45,
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: ElevatedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            status = false;
-                                          });
-                                        },
-                                        child: const Text(
-                                          'ຍ້ອນກັບ',
+                                const SizedBox(height: 17),
+                                Container(
+                                  width: width,
+                                  padding: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      border: Border.all(
+                                          width: 1, color: Colors.red)),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text('ໝາຍເຫດ',
                                           style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white),
-                                        ))))
-                            : const Text(''),
-                        Container(
-                            width: status == true ? width * 0.40 : width * 0.80,
-                            height: 45,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        primary: Colors.green),
-                                    onPressed: () {
-                                      setState(() {
-                                        status = true;
-                                      });
-                                      _insertOrder();
-                                    },
-                                    child: const Text(
-                                      'ຢືນຢັນ',
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.white),
-                                    )))),
-                      ],
-                    )
-                  ],
+                                              fontFamily: 'nsl_bold',
+                                              fontSize: 20,
+                                              color: Colors.red)),
+                                      const Text(
+                                          'ຄ່າບໍລິການແມ່ນຕ້ອງອິງຕາມການຄິດໄລ່ຕົວຈິງຂອງພະນັກງານ ເຄເອັນເອັມ',
+                                          style: const TextStyle(
+                                              fontFamily: 'nsl_bold',
+                                              fontSize: 14)),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )
+                          : Container(),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: status == true
+                            ? MainAxisAlignment.spaceBetween
+                            : MainAxisAlignment.center,
+                        children: [
+                          status == true
+                              ? Container(
+                                  width: status == true
+                                      ? width * 0.40
+                                      : width * 0.80,
+                                  height: 45,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              status = false;
+                                            });
+                                          },
+                                          child: const Text(
+                                            'ຍ້ອນກັບ',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.white),
+                                          ))))
+                              : const Text(''),
+                          Container(
+                              width:
+                                  status == true ? width * 0.40 : width * 0.80,
+                              height: 45,
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          primary: Colors.green),
+                                      onPressed: () {
+                                        if (status == true) {
+                                          _insertphuhub();
+                                          _insertphusong();
+                                        }
+                                        setState(() {
+                                          status = true;
+                                        });
+                                      },
+                                      child: const Text(
+                                        'ຢືນຢັນ',
+                                        style: TextStyle(
+                                            fontSize: 16, color: Colors.white),
+                                      )))),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -353,20 +424,101 @@ class _CreateOrderState extends State<CreateOrder> {
     );
   }
 
-  Container name(double screen) {
+  Container namephusong(double screen) {
     return Container(
       width: screen,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
-          controller: controllername,
+          controller: controllernamephusong,
+          keyboardType: TextInputType.name,
+          style: TextStyle(
+              fontSize: 16,
+              fontFamily: 'nsl_bold',
+              color: Colors.grey.shade800),
+          decoration: InputDecoration(
+            hintText: 'ຊື່',
+            hintStyle: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+                fontFamily: 'nsl_bold'),
+            fillColor: const Color(0xFFF4F6FB),
+            filled: true,
+            border: InputBorder.none,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container surnamephusong(double screen) {
+    return Container(
+      width: screen,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: TextFormField(
+          controller: controllersurnamephusong,
+          keyboardType: TextInputType.name,
+          style: TextStyle(
+              fontSize: 16,
+              fontFamily: 'nsl_bold',
+              color: Colors.grey.shade800),
+          decoration: InputDecoration(
+            hintText: 'ນາມສະກຸນ',
+            hintStyle: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+                fontFamily: 'nsl_bold'),
+            fillColor: const Color(0xFFF4F6FB),
+            filled: true,
+            border: InputBorder.none,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container namephuhub(double screen) {
+    return Container(
+      width: screen,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: TextFormField(
+          controller: controllernamephuhub,
           keyboardType: TextInputType.emailAddress,
           style: TextStyle(
               fontSize: 16,
               fontFamily: 'nsl_bold',
               color: Colors.grey.shade800),
           decoration: InputDecoration(
-            hintText: 'ຊື່ຜູ້ສົ່ງ',
+            hintText: 'ຊື່',
+            hintStyle: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+                fontFamily: 'nsl_bold'),
+            fillColor: const Color(0xFFF4F6FB),
+            filled: true,
+            border: InputBorder.none,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container surnamephuhub(double screen) {
+    return Container(
+      width: screen,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: TextFormField(
+          controller: controllersurnamephuhub,
+          keyboardType: TextInputType.emailAddress,
+          style: TextStyle(
+              fontSize: 16,
+              fontFamily: 'nsl_bold',
+              color: Colors.grey.shade800),
+          decoration: InputDecoration(
+            hintText: 'ນາມສະກຸນ',
             hintStyle: TextStyle(
                 fontSize: 16,
                 color: Colors.grey.shade600,
@@ -751,6 +903,7 @@ class _CreateOrderState extends State<CreateOrder> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
+          controller: controllerwidthheight,
           keyboardType: TextInputType.emailAddress,
           style: TextStyle(
               fontSize: 16,

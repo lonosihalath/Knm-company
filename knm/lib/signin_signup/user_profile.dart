@@ -1,12 +1,13 @@
 // ignore_for_file: prefer_const_constructors
-
+import 'dart:async';
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:knm/screen/home/homepage.dart';
+import 'package:knm/screen/order/order_controller.dart';
+import 'package:knm/signin_signup/detail_user.dart';
 import 'package:knm/signin_signup/user_account/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
@@ -109,12 +110,17 @@ class _User_ProfileState extends State<User_Profile> {
     saveimage.setString('imagepath', path);
   }
 
+  OrderShowController orderShowController = Get.put(OrderShowController());
+
   Future<Null> _Logout() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.clear();
-    setState(() {});
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => HomePage_Screen()));
+    showDialog(context: context, builder: (context) => dialog3());
+    Timer(Duration(seconds: 2), () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => HomePage_Screen()));
+            });
     // Navigator.pushAndRemoveUntil(
     //     context,
     //     MaterialPageRoute(builder: (context) => HomePage_Screen()),
@@ -166,12 +172,14 @@ class _User_ProfileState extends State<User_Profile> {
               child: Stack(
                 children: [
                   Container(
-                    width: 100,
-                    height: 100,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.network(controller.photoList[0].profile.toString(),fit: BoxFit.cover,))
-                  ),
+                      width: 100,
+                      height: 100,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.network(
+                            controller.photoList[0].profile.toString(),
+                            fit: BoxFit.cover,
+                          ))),
                   Positioned(
                       right: 0,
                       bottom: 0,
@@ -212,7 +220,10 @@ class _User_ProfileState extends State<User_Profile> {
                           fontSize: 20),
                     ),
                     onTap: () {
-                      //Get.to(Myaccount());
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => User_detail()));
                     },
                   ),
                   ListTile(
@@ -271,6 +282,14 @@ class _User_ProfileState extends State<User_Profile> {
     );
   }
 
+   Widget dialog3() => CupertinoAlertDialog(
+        title: Center(child: CircularProgressIndicator()),
+        content: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Center(child: Text('ກະລຸນາລໍຖ້າ')),
+        ),
+      );
+
   Widget dialog() => CupertinoAlertDialog(
         title: Text('Log out'),
         content: Text('Are you sure to Log out ?'),
@@ -278,10 +297,11 @@ class _User_ProfileState extends State<User_Profile> {
           CupertinoDialogAction(
             child: Text('Ok'),
             onPressed: () async {
-             await _googleSignIn.signOut();
+              await _googleSignIn.signOut();
               Navigator.pop(context);
               controller.onInit();
               _Logout();
+               orderShowController.onInit();
             },
           ),
           CupertinoDialogAction(

@@ -34,12 +34,12 @@ class Controller extends GetxController {
 
       photoList.add(
         Users(
-          name: _albumModel.name,
-          surname: _albumModel.surname,
-          email: _albumModel.email,
-          phone: _albumModel.phone,
-          gender: _albumModel.gender,
-          birth: _albumModel.birth,
+          name: _albumModel.name == null ? '...' : _albumModel.name,
+          surname: _albumModel.surname == null ? '...' : _albumModel.surname,
+          email: _albumModel.email == null ? '...' : _albumModel.email,
+          phone: _albumModel.phone == null ? '...' : _albumModel.phone,
+          gender: _albumModel.gender == null ? '...' : _albumModel.gender ,
+          birth: _albumModel.birth ==  null ? '...' :  _albumModel.birth,
           profile: _albumModel.profile,
           id: _albumModel.id,
         ),

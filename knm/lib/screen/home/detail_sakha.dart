@@ -1,11 +1,18 @@
 import 'dart:async';
-
+import 'package:flutter/cupertino.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Detail_Sakha extends StatefulWidget {
   final data;
-  const Detail_Sakha({Key? key, required this.data}) : super(key: key);
+  final double longitude;
+
+  const Detail_Sakha({
+    Key? key,
+    required this.data,
+    required this.longitude,
+  }) : super(key: key);
 
   @override
   State<Detail_Sakha> createState() => _Detail_SakhaState();
@@ -14,16 +21,31 @@ class Detail_Sakha extends StatefulWidget {
 class _Detail_SakhaState extends State<Detail_Sakha> {
   Completer<GoogleMapController> _controller = Completer();
 
-   CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(17.9526693, 102.6207602),
+  CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(18.0547392, 102.6795520),
     zoom: 16,
   );
+
+  late String text = widget.data.name;
+
+  late double longi = widget.longitude;
 
   static final CameraPosition _kLake = CameraPosition(
       bearing: 192.8334901395799,
       target: LatLng(37.43296265331129, -122.08832357078792),
       tilt: 59.440717697143555,
       zoom: 19.151926040649414);
+
+  static final Marker _marker = Marker(
+    markerId: MarkerId('myMarker'),
+    position: LatLng(18.0547392, 102.6795520),
+    infoWindow: InfoWindow(
+        title: 'Sakha',
+        onTap: () {
+          print('Tap');
+        }),
+    icon: BitmapDescriptor.defaultMarker,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +69,10 @@ class _Detail_SakhaState extends State<Detail_Sakha> {
                   borderRadius: BorderRadius.circular(5), color: Colors.blue),
               child: GoogleMap(
                 mapType: MapType.normal,
+                markers: {_marker},
                 initialCameraPosition: _kGooglePlex,
                 onMapCreated: (GoogleMapController controller) {
                   _controller.complete(controller);
-
                 },
               ),
             ),
@@ -80,7 +102,10 @@ class _Detail_SakhaState extends State<Detail_Sakha> {
                 Container(
                     width: 50,
                     child: FloatingActionButton(
-                      onPressed: () {},
+                      onPressed: () {
+                          showCupertinoModalPopup(
+                    context: context, builder: (context) => photo(context));
+                      },
                       child: Icon(
                         Icons.phone,
                         color: Colors.white,
@@ -109,6 +134,28 @@ class _Detail_SakhaState extends State<Detail_Sakha> {
                     fontSize: 16)),
           ],
         ),
+      ),
+    );
+  }
+
+  CupertinoActionSheet photo(BuildContext context) {
+    return CupertinoActionSheet(
+      actions: [
+        CupertinoActionSheetAction(
+            onPressed: () async {
+              Navigator.pop(context);
+              await launchUrl(Uri.parse('tel:/'+widget.data.tel));
+              ;
+            },
+            child: Text('ໂທຫາເບີ: '+widget.data.tel,
+                style: TextStyle(
+                    fontFamily: 'nsl_bold', fontSize: 16))),
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        child: Text('Cancel'),
+        onPressed: () {
+          Navigator.pop(context);
+        },
       ),
     );
   }

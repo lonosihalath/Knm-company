@@ -26,6 +26,10 @@ class _SskhaData_ScreenState extends State<SskhaData_Screen> {
     "ໄຊສະຫວ່າງ",
     "ດົງປ່າແຫຼບ",
   ];
+  
+  static List<double> lng = [17.9208950,17.989437,18.0547392];
+  static List<double> lat = [1027682342,102.608453,102.6795520];
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -61,7 +65,7 @@ class _SskhaData_ScreenState extends State<SskhaData_Screen> {
                   branchController.statetList.length,
                   (index) => GestureDetector(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => Detail_Sakha(data: branchController.statetList[index],)));
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => Detail_Sakha(data: branchController.statetList[index],longitude: double.parse(lng[index].toString(),))));
                     },
                     child: Container(
                           margin: EdgeInsets.all(5),
