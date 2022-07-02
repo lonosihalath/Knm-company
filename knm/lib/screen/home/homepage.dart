@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:knm/brand/brand_controller.dart';
 import 'package:knm/categories/comtroller.dart';
 import 'package:knm/screen/order/create_order.dart';
-import 'package:knm/screen/home/dataPhuhub.dart';
 import 'package:knm/screen/home/datasakha.dart';
 import 'package:knm/screen/kitlailakha/kidlailakha.dart';
 import 'package:knm/screen/order/detail_order.dart';
@@ -221,9 +220,10 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Usertoken == ''
-                                              ? Signin_SignUP()
-                                              : User_Profile()));
+                                          builder: (context) =>
+                                              Usertoken == null
+                                                  ? Signin_SignUP()
+                                                  : User_Profile()));
                                 },
                                 child: Container(
                                     width: 60,
@@ -710,7 +710,17 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                           (index) => Stack(
                                 children: [
                                   GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
+                                      // print(ordershowModel[index]
+                                      //     .attributes!
+                                      //     .recipientId
+                                      //     .toString());
+                                      // print(ordershowModel[index].id.toString());
+                                      // print(ordershowModel[index].attributes!.originalBranch.toString());
+                                      // print(ordershowModel[index].attributes!.destinationBranch.toString());
+                                      // print(ordershowModel[index].attributes!.orderItem!.toList());
+                                      // print(ordershowModel[index].attributes!.orderItem![0].attribute!.categoryId.toString());
+
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(

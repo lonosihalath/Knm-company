@@ -60,6 +60,7 @@ class _DetailOrderState extends State<DetailOrder> {
         });
     if (response.statusCode == 200) {
       print('======> ' + '${response.statusCode}');
+      print('======> ' + '${response.body}');
       Recipient _albumModel = Recipient.fromJson(jsonDecode(response.body));
       recipientList.add(
         Recipient(
@@ -81,6 +82,7 @@ class _DetailOrderState extends State<DetailOrder> {
           });
       if (responsedata.statusCode == 200) {
         print('======> ' + '${responsedata.statusCode}');
+        print('======> ' + '${responsedata.body}');
         Sender _albumModel = Sender.fromJson(jsonDecode(responsedata.body));
         senderList.add(
           Sender(
@@ -101,14 +103,13 @@ class _DetailOrderState extends State<DetailOrder> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      
         appBar: AppBar(
           elevation: 0,
           title: Text('ລາຍລະອຽດອໍເດີ້'),
           centerTitle: true,
         ),
         body: Container(
-         color: Colors.grey.shade100,
+          color: Colors.grey.shade100,
           child: Obx(() {
             if (isLoading.value)
               return Center(child: CircularProgressIndicator());
@@ -120,22 +121,40 @@ class _DetailOrderState extends State<DetailOrder> {
                   children: [
                     Text('ໄອດີພັດສະດຸ : ${widget.idorder}',
                         style: TextStyle(fontSize: 18, fontFamily: 'nsl_bold')),
-                    databrand(
-                        branchController.statetList
-                            .where((p0) => p0.id.toString() == widget.tonthang)
-                            .toList(),
-                        'ສາຂາຕົ້ນທາງ: '),
-                    databrand(
-                        branchController.statetList
-                            .where((p0) => p0.id.toString() == widget.piythang)
-                            .toList(),
-                        'ສາຂາປາຍທາງ: '),
+                    Container(
+                      margin: EdgeInsets.only(top: 7, bottom: 7),
+                      width: width,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            databrand(
+                                branchController.statetList
+                                    .where((p0) =>
+                                        p0.id.toString() == widget.tonthang)
+                                    .toList(),
+                                'ສາຂາຕົ້ນທາງ: '),
+                            databrand(
+                                branchController.statetList
+                                    .where((p0) =>
+                                        p0.id.toString() == widget.piythang)
+                                    .toList(),
+                                'ສາຂາປາຍທາງ: '),
+                          ],
+                        ),
+                      ),
+                    ),
                     Text('ຂໍ້ມູນເຄື່ອງຟາກ',
                         style: TextStyle(
                             fontSize: 16,
                             fontFamily: 'nsl_bold',
                             color: Colors.black)),
                     Container(
+                      margin: EdgeInsets.only(top: 7, bottom: 7),
                       width: width,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -171,13 +190,13 @@ class _DetailOrderState extends State<DetailOrder> {
                             fontSize: 16,
                             fontFamily: 'nsl_bold',
                             color: Colors.black)),
-                    datasender(),
+                    datasender(width),
                     Text('ຂໍ້ມູນຜູ້ຮັບ',
                         style: TextStyle(
                             fontSize: 16,
                             fontFamily: 'nsl_bold',
                             color: Colors.black)),
-                    datarecipient()
+                    datarecipient(width)
                   ],
                 ),
               );
@@ -196,72 +215,84 @@ class _DetailOrderState extends State<DetailOrder> {
         style: TextStyle(fontSize: 16, fontFamily: 'nsl_regular'));
   }
 
-  Padding datarecipient() {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('ຊື່: ' + recipientList[0].name,
-              style: TextStyle(
-                color: Colors.grey.shade800,
-                fontSize: 16,
-                fontFamily: 'nsl_regular',
-              )),
-          Text('ນາມສະກຸນ: ' + recipientList[0].surname,
-              style: TextStyle(
-                color: Colors.grey.shade800,
-                fontSize: 16,
-                fontFamily: 'nsl_regular',
-              )),
-          Text('ເບີໂທຕິດຕໍ່: ' + recipientList[0].tel,
-              style: TextStyle(
-                color: Colors.grey.shade800,
-                fontSize: 16,
-                fontFamily: 'nsl_regular',
-              )),
-          Text('ທີ່ຢູ່: ' + recipientList[0].address,
-              style: TextStyle(
-                color: Colors.grey.shade800,
-                fontSize: 16,
-                fontFamily: 'nsl_regular',
-              )),
-        ],
+  Container datarecipient(double width) {
+    return Container(
+      margin: EdgeInsets.only(top: 7, bottom: 7),
+      width: width,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10), color: Colors.white),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('ຊື່: ' + recipientList[0].name,
+                style: TextStyle(
+                  color: Colors.grey.shade800,
+                  fontSize: 16,
+                  fontFamily: 'nsl_regular',
+                )),
+            Text('ນາມສະກຸນ: ' + recipientList[0].surname,
+                style: TextStyle(
+                  color: Colors.grey.shade800,
+                  fontSize: 16,
+                  fontFamily: 'nsl_regular',
+                )),
+            Text('ເບີໂທຕິດຕໍ່: ' + recipientList[0].tel,
+                style: TextStyle(
+                  color: Colors.grey.shade800,
+                  fontSize: 16,
+                  fontFamily: 'nsl_regular',
+                )),
+            Text('ທີ່ຢູ່: ' + recipientList[0].address,
+                style: TextStyle(
+                  color: Colors.grey.shade800,
+                  fontSize: 16,
+                  fontFamily: 'nsl_regular',
+                )),
+          ],
+        ),
       ),
     );
   }
 
-  Padding datasender() {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('ຊື່: ' + senderList[0].name,
-              style: TextStyle(
-                color: Colors.grey.shade800,
-                fontSize: 16,
-                fontFamily: 'nsl_regular',
-              )),
-          Text('ນາມສະກຸນ: ' + senderList[0].surname,
-              style: TextStyle(
-                color: Colors.grey.shade800,
-                fontSize: 16,
-                fontFamily: 'nsl_regular',
-              )),
-          Text('ເບີໂທຕິດຕໍ່: ' + senderList[0].tel,
-              style: TextStyle(
-                color: Colors.grey.shade800,
-                fontSize: 16,
-                fontFamily: 'nsl_regular',
-              )),
-          Text('ທີ່ຢູ່: ' + senderList[0].address,
-              style: TextStyle(
-                color: Colors.grey.shade800,
-                fontSize: 16,
-                fontFamily: 'nsl_regular',
-              )),
-        ],
+  Container datasender(double width) {
+    return Container(
+      margin: EdgeInsets.only(top: 7, bottom: 7),
+      width: width,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10), color: Colors.white),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('ຊື່: ' + senderList[0].name,
+                style: TextStyle(
+                  color: Colors.grey.shade800,
+                  fontSize: 16,
+                  fontFamily: 'nsl_regular',
+                )),
+            Text('ນາມສະກຸນ: ' + senderList[0].surname,
+                style: TextStyle(
+                  color: Colors.grey.shade800,
+                  fontSize: 16,
+                  fontFamily: 'nsl_regular',
+                )),
+            Text('ເບີໂທຕິດຕໍ່: ' + senderList[0].tel,
+                style: TextStyle(
+                  color: Colors.grey.shade800,
+                  fontSize: 16,
+                  fontFamily: 'nsl_regular',
+                )),
+            Text('ທີ່ຢູ່: ' + senderList[0].address,
+                style: TextStyle(
+                  color: Colors.grey.shade800,
+                  fontSize: 16,
+                  fontFamily: 'nsl_regular',
+                )),
+          ],
+        ),
       ),
     );
   }

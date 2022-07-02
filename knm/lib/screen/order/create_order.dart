@@ -66,7 +66,7 @@ class _CreateOrderState extends State<CreateOrder> {
   var senderid;
   var recipientid;
 
-    DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = DateTime.now();
 
   _insertOrder() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -81,7 +81,7 @@ class _CreateOrderState extends State<CreateOrder> {
       "original_branch": idbranchtonthanhg,
       "destination_branch": idbranchtonpithang,
       "order_date": DateFormat('dd/MM/yyyy').format(selectedDate),
-      "order_month":  DateFormat('MM').format(selectedDate),
+      "order_month": DateFormat('MM').format(selectedDate),
       "order_year": DateFormat('yyyy').format(selectedDate),
       "status": "Hello world",
       "order_items": [
@@ -120,9 +120,11 @@ class _CreateOrderState extends State<CreateOrder> {
       token,
     );
     var json = jsonDecode(res.body);
-    print('Response status: ${json['user']['id']}');
+    //var json1 = jsonDecode(res.StatusCode);
+    print('Response status: ${json}');
+    print('Response status: ${json['Recipient']['id']}');
     setState(() {
-      recipientid = json['user']['id'];
+      recipientid = json['Recipient']['id'];
     });
     //print(res.body['user']['id']);
     //orderShowController.onInit();
@@ -147,9 +149,9 @@ class _CreateOrderState extends State<CreateOrder> {
     var json = jsonDecode(res.body);
     print('Response status: ${res.body}');
     setState(() {
-      senderid = json['user']['id'];
+      senderid = json['Sender']['id'];
       print(senderid);
-      _insertOrder();
+       _insertOrder();
     });
     //orderShowController.onInit();
   }
@@ -172,7 +174,7 @@ class _CreateOrderState extends State<CreateOrder> {
             : print('0'));
     ////////////////////////////////////////////////////////////////////////////////
     List.generate(
-       branchController.statetList.length,
+        branchController.statetList.length,
         (index) => branchController.statetList[index].name ==
                 currentSelectedValueTonthang
             ? setState(() {
@@ -182,7 +184,7 @@ class _CreateOrderState extends State<CreateOrder> {
             : print('0'));
     ////////////////////////////////////////////////////////////////////////////////
     List.generate(
-       branchController.statetList.length,
+        branchController.statetList.length,
         (index) => branchController.statetList[index].name ==
                 currentSelectedValuepiythang
             ? setState(() {
