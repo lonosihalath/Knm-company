@@ -129,6 +129,7 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
             child: Text('Ok'),
             onPressed: () {
               Navigator.pop(context);
+              Navigator.pop(context);
             },
           ),
         ],
@@ -512,6 +513,7 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
             orderShowController.onInit();
             categoriesController.onInit();
             branchController.onInit();
+            controller.onInit();
             Timer(Duration(seconds: 2), () {
               Navigator.pop(context);
               Navigator.pushReplacement(context,

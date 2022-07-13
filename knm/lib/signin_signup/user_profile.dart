@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:knm/callapi/api_signup_signin.dart';
+import 'package:knm/screen/callcenter/callcenter.dart';
 import 'package:knm/screen/home/homepage.dart';
 import 'package:knm/screen/order/order_controller.dart';
 import 'package:knm/signin_signup/detail_user.dart';
@@ -64,9 +67,27 @@ class _User_ProfileState extends State<User_Profile> {
     });
     saveImage(_image!.path);
     profileUser();
-    //_updateDataImage();
 
     //Get.to(Edit_account());
+  }
+
+  _updateDataImage() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? token = preferences.getString('token');
+    String? id = preferences.getString('id');
+    print('null!!!!');
+    var data = {
+      'profile': urlImag1,
+    };
+    var res = await CallApi().postDataProfile_user(data, id.toString(), token);
+    var body = json.decode(res.body);
+    print(body);
+    print('statusCode====>' + res.statusCode.toString());
+    if (res.statusCode == 200) {
+      controller.onInit();
+      // Navigator.pushReplacement(
+      //     context, MaterialPageRoute(builder: (context) => Edit_account()));
+    }
   }
 
   UploadTask? uploadTask;
@@ -86,7 +107,7 @@ class _User_ProfileState extends State<User_Profile> {
     setState(() {
       urlImag1 = urlImage;
     });
-    //_updateDataImage();
+    _updateDataImage();
     print('Linkkkkkkkkkkk: ' + urlImage);
   }
 
@@ -112,15 +133,17 @@ class _User_ProfileState extends State<User_Profile> {
 
   OrderShowController orderShowController = Get.put(OrderShowController());
 
-  Future<Null> _Logout() async {
+  Future<void> _Logout() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.clear();
     showDialog(context: context, builder: (context) => dialog3());
     Timer(Duration(seconds: 2), () {
-              Navigator.pop(context);
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => HomePage_Screen()));
-            });
+      Navigator.pop(context);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomePage_Screen()));
+      controller.photoList.clear();
+    });
+
     // Navigator.pushAndRemoveUntil(
     //     context,
     //     MaterialPageRoute(builder: (context) => HomePage_Screen()),
@@ -132,9 +155,6 @@ class _User_ProfileState extends State<User_Profile> {
 
   @override
   Widget build(BuildContext context) {
-    print(Usertoken);
-    print(Userid);
-    print(controller.photoList.length);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -171,15 +191,25 @@ class _User_ProfileState extends State<User_Profile> {
               },
               child: Stack(
                 children: [
-                  Container(
-                      width: 100,
-                      height: 100,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: Image.network(
-                            controller.photoList[0].profile.toString(),
-                            fit: BoxFit.cover,
-                          ))),
+                  Obx(() {
+                    if (controller.isLoading.value)
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      );
+                    else {
+                      return Container(
+                          width: 100,
+                          height: 100,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.network(
+                                controller.photoList[0].profile.toString(),
+                                fit: BoxFit.cover,
+                              )));
+                    }
+                  }),
                   Positioned(
                       right: 0,
                       bottom: 0,
@@ -242,7 +272,7 @@ class _User_ProfileState extends State<User_Profile> {
                           fontSize: 20),
                     ),
                     onTap: () {
-                      //Get.to(Myaccount());
+                    Get.to(Callcenter_Screen());
                     },
                   ),
                   ListTile(
@@ -282,7 +312,7 @@ class _User_ProfileState extends State<User_Profile> {
     );
   }
 
-   Widget dialog3() => CupertinoAlertDialog(
+  Widget dialog3() => CupertinoAlertDialog(
         title: Center(child: CircularProgressIndicator()),
         content: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -299,9 +329,8 @@ class _User_ProfileState extends State<User_Profile> {
             onPressed: () async {
               await _googleSignIn.signOut();
               Navigator.pop(context);
-              controller.onInit();
               _Logout();
-               orderShowController.onInit();
+              orderShowController.onInit();
             },
           ),
           CupertinoDialogAction(

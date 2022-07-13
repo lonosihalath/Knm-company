@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_const_constructors
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,6 +10,7 @@ import 'package:knm/screen/order/Recipient/model.dart';
 import 'package:knm/screen/order/show_order_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
 
 class DetailOrder extends StatefulWidget {
   final String idrecipient;
@@ -108,100 +108,124 @@ class _DetailOrderState extends State<DetailOrder> {
           title: Text('ລາຍລະອຽດອໍເດີ້'),
           centerTitle: true,
         ),
-        body: Container(
-          color: Colors.grey.shade100,
-          child: Obx(() {
-            if (isLoading.value)
-              return Center(child: CircularProgressIndicator());
-            else {
-              return Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        body: SingleChildScrollView(
+          child: Container(
+            color: Colors.grey.shade100,
+            child: Obx(() {
+              if (isLoading.value)
+                return Column(
                   children: [
-                    Text('ໄອດີພັດສະດຸ : ${widget.idorder}',
-                        style: TextStyle(fontSize: 18, fontFamily: 'nsl_bold')),
-                    Container(
-                      margin: EdgeInsets.only(top: 7, bottom: 7),
-                      width: width,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            databrand(
-                                branchController.statetList
-                                    .where((p0) =>
-                                        p0.id.toString() == widget.tonthang)
-                                    .toList(),
-                                'ສາຂາຕົ້ນທາງ: '),
-                            databrand(
-                                branchController.statetList
-                                    .where((p0) =>
-                                        p0.id.toString() == widget.piythang)
-                                    .toList(),
-                                'ສາຂາປາຍທາງ: '),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Text('ຂໍ້ມູນເຄື່ອງຟາກ',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'nsl_bold',
-                            color: Colors.black)),
-                    Container(
-                      margin: EdgeInsets.only(top: 7, bottom: 7),
-                      width: width,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('ຊື່ພັດສະດຸ: ' +
-                                widget.orderItem[0].attribute!.parcelName
-                                    .toString()),
-                            Text('ນໍ້າໜັກ: ' +
-                                widget.orderItem[0].attribute!.weight
-                                    .toString() +
-                                ' km'),
-                            Text('ລວງຍາວ+ລວງສູງ: ' +
-                                widget.orderItem[0].attribute!.widthHeigth
-                                    .toString() +
-                                ' cm'),
-                            datacategory(
-                                categoriesController.statetList
-                                    .where((p0) =>
-                                        p0.id.toString() == widget.idcategories)
-                                    .toList(),
-                                'ປະເພດສິນຄ້າ: ')
-                          ],
-                        ),
-                      ),
-                    ),
-                    Text('ຂໍ້ມູນຜູ້ສົ່ງ',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'nsl_bold',
-                            color: Colors.black)),
-                    datasender(width),
-                    Text('ຂໍ້ມູນຜູ້ຮັບ',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'nsl_bold',
-                            color: Colors.black)),
-                    datarecipient(width)
+                    SizedBox(height: 100),
+                    Center(child: CircularProgressIndicator()),
                   ],
-                ),
-              );
-            }
-          }),
+                );
+              else {
+                return Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('ໄອດີພັດສະດຸ : ${widget.idorder}',
+                          style: TextStyle(fontSize: 18, fontFamily: 'nsl_bold')),
+                      Container(
+                        margin: EdgeInsets.only(top: 7, bottom: 7),
+                        width: width,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              databrand(
+                                  branchController.statetList
+                                      .where((p0) =>
+                                          p0.id.toString() == widget.tonthang)
+                                      .toList(),
+                                  'ສາຂາຕົ້ນທາງ: '),
+                              databrand(
+                                  branchController.statetList
+                                      .where((p0) =>
+                                          p0.id.toString() == widget.piythang)
+                                      .toList(),
+                                  'ສາຂາປາຍທາງ: '),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Text('ຂໍ້ມູນເຄື່ອງຟາກ',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'nsl_bold',
+                              color: Colors.black)),
+                      Container(
+                        margin: EdgeInsets.only(top: 7, bottom: 7),
+                        width: width,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children:List.generate(widget.orderItem.length,(index) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 5),
+                              Text('ສິນຄ້າທີ:  ${index+1}',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: 'nsl_bold',
+                                      color: Colors.black)),
+                                      SizedBox(height: 3),
+                              Text('ຊື່ພັດສະດຸ: ' +
+                                  widget.orderItem[index].attribute!.parcelName
+                                      .toString()),
+                              Text('ນໍ້າໜັກ: ' +
+                                  widget.orderItem[index].attribute!.weight
+                                      .toString() +
+                                  ' km'),
+                              Text('ລວງຍາວ+ລວງສູງ: ' +
+                                  widget.orderItem[index].attribute!.widthHeigth
+                                      .toString() +
+                                  ' cm'),
+                              datacategory(
+                                  categoriesController.statetList
+                                      .where((p0) =>
+                                          p0.id.toString() == widget.orderItem[index].attribute!.categoryId)
+                                      .toList(),
+                                  'ປະເພດສິນຄ້າ: '),
+                            SizedBox(height: 7),
+                            Container(
+                              width: width,
+                              height: 2,
+                              color: Colors.grey.shade400,
+                            )
+                            ],
+                          ),)
+                          ),
+                        ),
+                      ),
+                      Text('ຂໍ້ມູນຜູ້ສົ່ງ',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'nsl_bold',
+                              color: Colors.black)),
+                      datasender(width),
+                      Text('ຂໍ້ມູນຜູ້ຮັບ',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'nsl_bold',
+                              color: Colors.black)),
+                      datarecipient(width),
+                      
+                    ],
+                  ),
+                );
+              }
+            }),
+          ),
         ));
   }
 

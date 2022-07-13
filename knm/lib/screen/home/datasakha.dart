@@ -65,7 +65,8 @@ class _SskhaData_ScreenState extends State<SskhaData_Screen> {
                   branchController.statetList.length,
                   (index) => GestureDetector(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => Detail_Sakha(data: branchController.statetList[index],longitude: double.parse(lng[index].toString(),))));
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => Detail_Sakha(
+                        data: branchController.statetList[index],longitude: double.parse(lng[index].toString(),))));
                     },
                     child: Container(
                           margin: EdgeInsets.all(5),
@@ -84,7 +85,7 @@ class _SskhaData_ScreenState extends State<SskhaData_Screen> {
                                     width: 60,
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(30),
-                                        child: Image.asset('images/sakha.png')),
+                                        child: Image.asset('images/kong3.png')),
                                   ),
                                   Container(
                                     margin: EdgeInsets.all(10),
@@ -97,10 +98,10 @@ class _SskhaData_ScreenState extends State<SskhaData_Screen> {
                                                 fontFamily: 'nsl_bold',
                                                 fontSize: 18,
                                                 color: Colors.black)),
-                                        Text(branchController.statetList[index].tel,
+                                        Text(branchController.statetList[index].state,
                                             style: const TextStyle(
                                                 fontFamily: 'nsl_light',
-                                                fontSize: 16,
+                                                fontSize: 14,
                                                 color: Colors.black)),
                                       ],
                                     ),

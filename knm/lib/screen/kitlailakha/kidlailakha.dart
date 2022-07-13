@@ -15,6 +15,8 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
 
   int price = 6000;
   double amout = 0;
+  double nn = 0;
+  int luam = 0;
   var currentSelectedValueTonthang;
   var currentSelectedValuepiythang;
   static var datasakhaTonthang = [
@@ -186,11 +188,16 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
                   style: TextStyle(fontSize: 16, fontFamily: 'nsl_bold')),
               onPressed: () {
                 setState(() {
-                  amout = double.parse(width1.text.toString()) *
-                      double.parse(width2.text.toString()) *
-                      double.parse(heigth.text.toString()); 
-                  amout = amout / 6000; 
-                  amout = amout * price;
+                  luam = int.parse(width1.text.toString()) +
+                      int.parse(width2.text.toString()) +
+                      int.parse(heigth.text.toString());
+                  // amout = amout * 6000;
+                  nn = double.parse(weigth.text);
+                  if (luam > double.parse(weigth.text)) {
+                    amout = luam.toDouble() * price;
+                  } else {
+                    amout = nn.toDouble() * price;
+                  }
                 });
               },
             ),

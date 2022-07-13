@@ -9,6 +9,7 @@ import 'package:knm/screen/kitlailakha/kidlailakha.dart';
 import 'package:knm/screen/order/detail_order.dart';
 import 'package:knm/screen/order/order_controller.dart';
 import 'package:knm/screen/order/show_order_model.dart';
+import 'package:knm/screen/tackking/order.dart';
 import 'package:knm/screen/tackking/order_Tacking.dart';
 import 'package:knm/signin_signup/signIN_signUp.dart';
 import 'package:knm/signin_signup/user_account/controller.dart';
@@ -221,13 +222,38 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              Usertoken == null
+                                              controller.photoList.isEmpty
                                                   ? Signin_SignUP()
                                                   : User_Profile()));
                                 },
                                 child: Container(
                                     width: 60,
-                                    child: Image.asset('images/profile.png')))
+                                    child: Obx(() {
+                                      if (controller.isLoading.value)
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                              color: Colors.white),
+                                        );
+                                      else {
+                                        return controller.photoList.length
+                                                    .toInt() !=
+                                                0
+                                            ? Container(
+                                                width: 60,
+                                                height: 60,
+                                                child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50),
+                                                    child: Image.network(
+                                                      controller
+                                                          .photoList[0].profile
+                                                          .toString(),
+                                                      fit: BoxFit.cover,
+                                                    )))
+                                            : Image.asset('images/profile.png');
+                                      }
+                                    })))
                           ],
                         ),
                       ),
@@ -247,14 +273,25 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                               children: [
                                 GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
+                                    controller.photoList.isEmpty ? Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Signin_SignUP())) :  Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   CreateOrder()));
                                     },
                                     child: item_main(
-                                        'images/kong.png', 'ຝາກເຄື່ອງເອງ')),
+                                        'images/kong1.png',
+                                        'ຝາກເຄື່ອງເອງ',
+                                        Container(
+                                              width: 80,
+                                              height: 80,
+                                              child: Image.asset(
+                                                  'images/kong1.png',
+                                                  fit: BoxFit.contain)),)),
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
@@ -265,7 +302,12 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                     });
                                   },
                                   child: item_main(
-                                      'images/windowss.png', 'ພັດສະດຸຂອງຂ້ອຍ'),
+                                      'images/kong2.png', 'ພັດສະດຸຂອງຂ້ອຍ',Container(
+                                              width: 80,
+                                              height: 80,
+                                              child: Image.asset(
+                                                  'images/kong2.png',
+                                                  fit: BoxFit.contain)),),
                                 ),
                                 GestureDetector(
                                   onTap: () {
@@ -275,8 +317,12 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                             builder: (context) =>
                                                 Kidlailakha_screen()));
                                   },
-                                  child: item_main('images/caculator.png',
-                                      'ຄິດໄລ່ຄ່າຂົນສົ່ງ'),
+                                  child: item_main(
+                                      'images/kong5.png', 'ຄິດໄລ່ຄ່າຂົນສົ່ງ',Container(
+                                        width: 100,
+                                              child: Image.asset(
+                                                  'images/kong5.png',
+                                                  fit: BoxFit.contain)),),
                                 ),
                                 GestureDetector(
                                     onTap: () {
@@ -287,16 +333,27 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                                   SskhaData_Screen()));
                                     },
                                     child: item_main(
-                                        'images/sakha.png', 'ຂໍ້ມູນສາຂາ')),
+                                        'images/kong3.png', 'ຂໍ້ມູນສາຂາ',Container(
+                                              width: 90,
+                                              height: 90,
+                                              child: Image.asset(
+                                                  'images/kong3.png',
+                                                  fit: BoxFit.contain)),)),
                                 GestureDetector(
                                     onTap: () {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (_) => Order_Tacking()));
+                                              builder: (_) =>
+                                                  OrderTotacking()));
                                     },
                                     child: item_main(
-                                        'images/car.png', 'Prackink')),
+                                        'images/kong4.png', 'Prackink',Container(
+                                              width: 80,
+                                              height: 90,
+                                              child: Image.asset(
+                                                  'images/kong1.png',
+                                                  fit: BoxFit.contain)),)),
                                 // GestureDetector(
                                 //     onTap: () {
                                 //       Navigator.push(
@@ -500,7 +557,16 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                                             p0.attributes!
                                                                 .status
                                                                 .toString() ==
-                                                            'Pending')
+                                                            'Pending' ||  p0.attributes!
+                                                                .status
+                                                                .toString() ==
+                                                            'Confirmed' ||  p0.attributes!
+                                                                .status
+                                                                .toString() ==
+                                                            'Processing'||  p0.attributes!
+                                                                .status
+                                                                .toString() ==
+                                                            'Arrived' )
                                                         .toList(),
                                                     Colors.orange)
                                                 : selected2.toInt() == 1
@@ -512,7 +578,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                                                 p0.attributes!
                                                                     .status
                                                                     .toString() ==
-                                                                'Processing')
+                                                                'Picked')
                                                             .toList(),
                                                         Colors.green)
                                                     : selected2.toInt() == 2
@@ -711,27 +777,41 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      // print(ordershowModel[index]
-                                      //     .attributes!
-                                      //     .recipientId
-                                      //     .toString());
-                                      // print(ordershowModel[index].id.toString());
-                                      // print(ordershowModel[index].attributes!.originalBranch.toString());
-                                      // print(ordershowModel[index].attributes!.destinationBranch.toString());
-                                      // print(ordershowModel[index].attributes!.orderItem!.toList());
-                                      // print(ordershowModel[index].attributes!.orderItem![0].attribute!.categoryId.toString());
-
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  DetailOrder(
-                                                  idrecipient:ordershowModel[index].attributes!.recipientId.toString(),
-                                                  idorder:ordershowModel[index].id.toString(),
-                                                  tonthang:ordershowModel[index].attributes!.originalBranch.toString(),
-                                                  piythang:ordershowModel[index].attributes!.destinationBranch.toString(),
-                                                  orderItem:ordershowModel[index].attributes!.orderItem!.toList(),
-                                                  idcategories:ordershowModel[index].attributes!.orderItem![0].attribute!.categoryId.toString(),
+                                              builder: (context) => DetailOrder(
+                                                    idrecipient:
+                                                        ordershowModel[index]
+                                                            .attributes!
+                                                            .recipientId
+                                                            .toString(),
+                                                    idorder:
+                                                        ordershowModel[index]
+                                                            .id
+                                                            .toString(),
+                                                    tonthang:
+                                                        ordershowModel[index]
+                                                            .attributes!
+                                                            .originalBranch
+                                                            .toString(),
+                                                    piythang:
+                                                        ordershowModel[index]
+                                                            .attributes!
+                                                            .destinationBranch
+                                                            .toString(),
+                                                    orderItem:
+                                                        ordershowModel[index]
+                                                            .attributes!
+                                                            .orderItem!
+                                                            .toList(),
+                                                    idcategories:
+                                                        ordershowModel[index]
+                                                            .attributes!
+                                                            .orderItem![0]
+                                                            .attribute!
+                                                            .categoryId
+                                                            .toString(),
                                                   )));
                                     },
                                     child: Container(
@@ -742,23 +822,35 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(15),
-                                            color: Colors.grey.shade200),
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text('id: ' +
-                                                  ordershowModel[index]
-                                                      .id
-                                                      .toString()),
-                                              Text('name: ' +
-                                                  ordershowModel[index]
-                                                      .attributes!
-                                                      .orderItem![0]
-                                                      .attribute!
-                                                      .parcelName
-                                                      .toString()),
-                                            ])),
+                                            color: Colors.grey.shade100),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                                width: 65,
+                                                child: Image.asset(
+                                                    'images/box.png')),
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  left: 10, top: 15),
+                                              child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(ordershowModel[index]
+                                                        .attributes!
+                                                        .invoiceId
+                                                        .toString()),
+                                                    Text('name: ' +
+                                                        ordershowModel[index]
+                                                            .attributes!
+                                                            .orderItem![0]
+                                                            .attribute!
+                                                            .parcelName
+                                                            .toString()),
+                                                  ]),
+                                            ),
+                                          ],
+                                        )),
                                   ),
                                   Positioned(
                                       top: 10,
@@ -813,7 +905,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
     );
   }
 
-  Container item_main(String image, text) {
+  Container item_main(String image, text, Container container) {
     return Container(
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -822,10 +914,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
       width: 150,
       child: Column(
         children: [
-          Container(
-              width: 130,
-              height: 110,
-              child: Image.asset(image, fit: BoxFit.contain)),
+          container,
           SizedBox(height: 5),
           Text(text, style: TextStyle(fontFamily: 'nsl_bold', fontSize: 16))
         ],

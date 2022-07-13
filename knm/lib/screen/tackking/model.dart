@@ -1,29 +1,22 @@
-import 'dart:convert';
 
-List<OrdershowModel> postFromJson(String str) => List<OrdershowModel>.from(
-    json.decode(str)['data'].map((x) => OrdershowModel.fromJson(x)));
+class Order {
+  List<Attributes>? data;
 
-class OrdershowModel {
-  int? id;
-  String? type;
-  Attributes? attributes;
+  Order({this.data});
 
-  OrdershowModel({this.id, this.type, this.attributes});
-
-  OrdershowModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    type = json['type'];
-    attributes = json['attributes'] != null
-        ? new Attributes.fromJson(json['attributes'])
-        : null;
+  Order.fromJson(Map<String, dynamic> json) {
+    if (json['data'] != null) {
+      data = <Attributes>[];
+      json['data'].forEach((v) {
+        data!.add(new Attributes.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['type'] = this.type;
-    if (this.attributes != null) {
-      data['attributes'] = this.attributes!.toJson();
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -31,9 +24,7 @@ class OrdershowModel {
 
 class Attributes {
   String? userId;
-  String? invoiceId;
   int? recipientId;
-  int? senderId;
   String? originalBranch;
   String? destinationBranch;
   String? orderDate;
@@ -44,9 +35,7 @@ class Attributes {
 
   Attributes(
       {this.userId,
-      this.invoiceId,
       this.recipientId,
-      this.senderId,
       this.originalBranch,
       this.destinationBranch,
       this.orderDate,
@@ -57,9 +46,7 @@ class Attributes {
 
   Attributes.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
-    invoiceId = json['invoice_id'];
     recipientId = json['recipient_id'];
-    senderId = json['sender_id'];
     originalBranch = json['original_branch'];
     destinationBranch = json['destination_branch'];
     orderDate = json['order_date'];
@@ -77,9 +64,7 @@ class Attributes {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['user_id'] = this.userId;
-    data['invoice_id'] = this.invoiceId;
     data['recipient_id'] = this.recipientId;
-    data['sender_id'] = this.senderId;
     data['original_branch'] = this.originalBranch;
     data['destination_branch'] = this.destinationBranch;
     data['order_date'] = this.orderDate;
@@ -153,14 +138,14 @@ class Attribute {
 }
 
 ////////////////////////////////////////////
-class Orderitemss {
+class orderitem {
   String? categoryId;
   String? parcelname;
   String? weight;
   String? widthheight;
  
 
-  Orderitemss({
+  orderitem({
     required this.categoryId,
     required this.parcelname,
     required this.weight,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knm/signin_signup/edit_user.dart';
 import 'package:knm/signin_signup/user_account/controller.dart';
 import 'package:get/get.dart';
 
@@ -11,6 +12,12 @@ class User_detail extends StatefulWidget {
 
 class _User_detailState extends State<User_detail> {
   final Controller controller = Get.find<Controller>();
+  @override
+  void initState() {
+    super.initState();
+    controller.onInit();
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -48,127 +55,177 @@ class _User_detailState extends State<User_detail> {
               child: Column(
                 children: [
                   SizedBox(height: height * 0.10),
-                  Container(
-                      width: 100,
-                      height: 100,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: Image.network(
-                            controller.photoList[0].profile.toString(),
-                            fit: BoxFit.cover,
-                          ))),
-                   SizedBox(height: 50),
-                  Container(
-                    padding: EdgeInsets.all(15),
-                      width: width,
-                      height: 300,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Colors.white),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    children: [
+                      Obx(() {
+                        if (controller.isLoading.value)
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        else {
+                          return Container(
+                              width: 100,
+                              height: 100,
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.network(
+                                    controller.photoList[0].profile.toString(),
+                                    fit: BoxFit.cover,
+                                  )));
+                        }
+                      }),
+                      SizedBox(height: 10),
+                      Text('ຮູບໂປຣໄຟລ',
+                          style: TextStyle(
+                              fontFamily: 'nsl_bold',
+                              color: Colors.white,
+                              fontSize: 18)),
+                    ],
+                  ),
+                  SizedBox(height: 40),
+                  Obx(() {
+                    if (controller.isLoading.value)
+                      return Center(child: CircularProgressIndicator());
+                    else {
+                      return Container(
+                          padding: EdgeInsets.all(15),
+                          width: width,
+                          height: 300,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.white),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'ຊື່ຜູ້ໃຊ້',
-                                style: TextStyle(
-                                    fontFamily: 'nsl_bold',
-                                    color: Colors.grey.shade800,
-                                    fontSize: 18),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'ຊື່ຜູ້ໃຊ້',
+                                    style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        color: Colors.grey.shade800,
+                                        fontSize: 18),
+                                  ),
+                                  Text(
+                                    controller.photoList[0].name.toString(),
+                                    style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        color: Colors.grey.shade800,
+                                        fontSize: 18),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                controller.photoList[0].name.toString(),
-                                style: TextStyle(
-                                    fontFamily: 'nsl_bold',
-                                    color: Colors.grey.shade800,
-                                    fontSize: 18),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'ເພດ',
+                                    style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        color: Colors.grey.shade800,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    controller.photoList[0].gender.toString(),
+                                    style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        color: Colors.grey.shade800,
+                                        fontSize: 16),
+                                  ),
+                                ],
                               ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'ວັນເດືອນປີເກີດ',
+                                    style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        color: Colors.grey.shade800,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    controller.photoList[0].birth.toString(),
+                                    style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        color: Colors.grey.shade800,
+                                        fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'ເບີໂທ',
+                                    style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        color: Colors.grey.shade800,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    controller.photoList[0].phone.toString(),
+                                    style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        color: Colors.grey.shade800,
+                                        fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'ອີເມວ',
+                                    style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        color: Colors.grey.shade800,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    controller.photoList[0].email.toString(),
+                                    style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        color: Colors.grey.shade800,
+                                        fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 45),
+                              Container(
+                                width: width,
+                                height: 50,
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditAccount()));
+                                    },
+                                    child: Text(
+                                      'ແກ້ໄຂຂໍ້ມູນ',
+                                      style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                      ),
+                                    )),
+                              )
                             ],
-                          ), const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'ເພດ',
-                                style: TextStyle(
-                                    fontFamily: 'nsl_bold',
-                                    color: Colors.grey.shade800,
-                                    fontSize: 16),
-                              ),
-                              Text(
-                                controller.photoList[0].gender.toString(),
-                                style: TextStyle(
-                                    fontFamily: 'nsl_bold',
-                                    color: Colors.grey.shade800,
-                                    fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'ວັນເດືອນປີເກີດ',
-                                style: TextStyle(
-                                    fontFamily: 'nsl_bold',
-                                    color: Colors.grey.shade800,
-                                    fontSize: 16),
-                              ),
-                              Text(
-                                controller.photoList[0].birth.toString(),
-                                style: TextStyle(
-                                    fontFamily: 'nsl_bold',
-                                    color: Colors.grey.shade800,
-                                    fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'ເບີໂທ',
-                                style: TextStyle(
-                                    fontFamily: 'nsl_bold',
-                                    color: Colors.grey.shade800,
-                                    fontSize: 16),
-                              ),
-                              Text(
-                                controller.photoList[0].phone.toString(),
-                                style: TextStyle(
-                                    fontFamily: 'nsl_bold',
-                                    color: Colors.grey.shade800,
-                                    fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'ອີເມວ',
-                                style: TextStyle(
-                                    fontFamily: 'nsl_bold',
-                                    color: Colors.grey.shade800,
-                                    fontSize: 16),
-                              ),
-                              Text(
-                                controller.photoList[0].email.toString(),
-                                style: TextStyle(
-                                    fontFamily: 'nsl_bold',
-                                    color: Colors.grey.shade800,
-                                    fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                      ))
+                          ));
+                    }
+                  })
                 ],
               ),
             ),

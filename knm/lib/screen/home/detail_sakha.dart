@@ -21,26 +21,56 @@ class Detail_Sakha extends StatefulWidget {
 class _Detail_SakhaState extends State<Detail_Sakha> {
   Completer<GoogleMapController> _controller = Completer();
 
-  CameraPosition _kGooglePlex = CameraPosition(
+  CameraPosition _kGooglePlex1 = CameraPosition(
+    target: LatLng(17.9219072, 102.7682240),
+    zoom: 16,
+  );
+  CameraPosition _kGooglePlex2 = CameraPosition(
     target: LatLng(18.0547392, 102.6795520),
     zoom: 16,
   );
+  CameraPosition _kGooglePlex3 = CameraPosition(
+    target: LatLng(17.9880426, 102.6057698),
+    zoom: 16,
+  );
+
+  String namesakha = 'kkkk';
 
   late String text = widget.data.name;
 
-  late double longi = widget.longitude;
+  double longi = 10.00;
 
-  static final CameraPosition _kLake = CameraPosition(
+  final CameraPosition _kLake = CameraPosition(
       bearing: 192.8334901395799,
       target: LatLng(37.43296265331129, -122.08832357078792),
       tilt: 59.440717697143555,
       zoom: 19.151926040649414);
 
-  static final Marker _marker = Marker(
+  final Marker _marker1 = Marker(
+    markerId: MarkerId('myMarker'),
+    position: LatLng(17.9219072, 102.7682240),
+    infoWindow: InfoWindow(
+        title: 'ສາຂາ1',
+        onTap: () {
+          print('Tap');
+        }),
+    icon: BitmapDescriptor.defaultMarker,
+  );
+  final Marker _marker2 = Marker(
     markerId: MarkerId('myMarker'),
     position: LatLng(18.0547392, 102.6795520),
     infoWindow: InfoWindow(
-        title: 'Sakha',
+        title: 'ສາຂາ2',
+        onTap: () {
+          print('Tap');
+        }),
+    icon: BitmapDescriptor.defaultMarker,
+  );
+  final Marker _marker3 = Marker(
+    markerId: MarkerId('myMarker'),
+    position: LatLng(17.9880426, 102.6057698),
+    infoWindow: InfoWindow(
+        title: 'ສາຂາ3',
         onTap: () {
           print('Tap');
         }),
@@ -69,8 +99,8 @@ class _Detail_SakhaState extends State<Detail_Sakha> {
                   borderRadius: BorderRadius.circular(5), color: Colors.blue),
               child: GoogleMap(
                 mapType: MapType.normal,
-                markers: {_marker},
-                initialCameraPosition: _kGooglePlex,
+                markers: {widget.data.name.toString() == 'ສາຂາ1' ? _marker1 : widget.data.name.toString() == 'ສາຂາ2' ? _marker2 : _marker3},
+                initialCameraPosition:widget.data.name.toString() == 'ສາຂາ1' ? _kGooglePlex1 : widget.data.name.toString() == 'ສາຂາ2' ? _kGooglePlex2:_kGooglePlex3,
                 onMapCreated: (GoogleMapController controller) {
                   _controller.complete(controller);
                 },
@@ -103,8 +133,9 @@ class _Detail_SakhaState extends State<Detail_Sakha> {
                     width: 50,
                     child: FloatingActionButton(
                       onPressed: () {
-                          showCupertinoModalPopup(
-                    context: context, builder: (context) => photo(context));
+                        showCupertinoModalPopup(
+                            context: context,
+                            builder: (context) => photo(context));
                       },
                       child: Icon(
                         Icons.phone,
@@ -144,12 +175,11 @@ class _Detail_SakhaState extends State<Detail_Sakha> {
         CupertinoActionSheetAction(
             onPressed: () async {
               Navigator.pop(context);
-              await launchUrl(Uri.parse('tel:/'+widget.data.tel));
+              await launchUrl(Uri.parse('tel:/' + widget.data.tel));
               ;
             },
-            child: Text('ໂທຫາເບີ: '+widget.data.tel,
-                style: TextStyle(
-                    fontFamily: 'nsl_bold', fontSize: 16))),
+            child: Text('ໂທຫາເບີ: ' + widget.data.tel,
+                style: TextStyle(fontFamily: 'nsl_bold', fontSize: 16))),
       ],
       cancelButton: CupertinoActionSheetAction(
         child: Text('Cancel'),

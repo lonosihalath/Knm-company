@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:knm/brand/brand_controller.dart';
@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:knm/brand/widget.dart';
 import 'package:knm/categories/comtroller.dart';
 import 'package:knm/categories/widget.dart';
+import 'package:knm/screen/order/controller_orderitem.dart';
+import 'package:knm/screen/order/orderItemDetail.dart';
 import 'package:knm/screen/order/order_controller.dart';
 import 'package:knm/signin_signup/callApi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,6 +55,8 @@ class _CreateOrderState extends State<CreateOrder> {
   BranchController branchController = Get.put(BranchController());
   OrderShowController orderShowController = Get.put(OrderShowController());
   CategoriesController categoriesController = Get.put(CategoriesController());
+  final OrderItemController orderItemController =
+      Get.put(OrderItemController());
   var currentSelectedValuetelphuhub;
   var currentSelectedValuetelphusong;
   var currentSelectedValueTonthang;
@@ -67,7 +71,9 @@ class _CreateOrderState extends State<CreateOrder> {
   var recipientid;
 
   DateTime selectedDate = DateTime.now();
+  ///////////////////////////////////////////////////
 
+  ///////////////////////////////////////////////////
   _insertOrder() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = preferences.getString('token')!;
@@ -84,14 +90,27 @@ class _CreateOrderState extends State<CreateOrder> {
       "order_month": DateFormat('MM').format(selectedDate),
       "order_year": DateFormat('yyyy').format(selectedDate),
       "status": "Hello world",
-      "order_items": [
-        {
-          "category_id": idcategory,
-          "parcel_name": controllerparcel.text,
-          "weight": controllernumnuk.text,
-          "width_height": controllerwidthheight.text,
+      "order_items": List.generate(
+        orderItemController.items.length,
+        (index) => {
+          "category_id": orderItemController.items.values
+              .toList()[index]
+              .categoryId
+              .toString(),
+          "parcel_name": orderItemController.items.values
+              .toList()[index]
+              .parcelname
+              .toString(),
+          "weight": orderItemController.items.values
+              .toList()[index]
+              .weight
+              .toString(),
+          "width_height": orderItemController.items.values
+              .toList()[index]
+              .widthheight
+              .toString(),
         },
-      ]
+      )
     };
 
     var resorder = await CallApiOrder().postDataupOrder(
@@ -99,8 +118,11 @@ class _CreateOrderState extends State<CreateOrder> {
       'insert',
       token,
     );
-    print('Response status: ${resorder.body}');
-    orderShowController.onInit();
+    print('Response status: ${resorder.statusCode}');
+    if(resorder.statusCode == 200){
+       orderShowController.onInit();
+       orderItemController.clear();
+    }
   }
 
   _insertphuhub() async {
@@ -151,7 +173,7 @@ class _CreateOrderState extends State<CreateOrder> {
     setState(() {
       senderid = json['Sender']['id'];
       print(senderid);
-       _insertOrder();
+      _insertOrder();
     });
     //orderShowController.onInit();
   }
@@ -207,6 +229,7 @@ class _CreateOrderState extends State<CreateOrder> {
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
+              orderItemController.clear();
             },
             icon: const Icon(
               Icons.arrow_back,
@@ -232,179 +255,257 @@ class _CreateOrderState extends State<CreateOrder> {
         //   )
         //],
       ),
-      body: Container(
+      body: SingleChildScrollView(
+        child: Container(
           decoration: const BoxDecoration(
               image: const DecorationImage(
                   image: const AssetImage('images/bg.png'), fit: BoxFit.cover)),
           child: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                height: 690,
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, top: 20, bottom: 30),
-                margin: const EdgeInsets.only(top: 100),
-                width: width,
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25),
-                        topRight: const Radius.circular(25))),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      status == false
-                          ? Column(
+            child: Container(
+              padding: const EdgeInsets.only(
+                  left: 20, right: 20, top: 20, bottom: 30),
+              margin: const EdgeInsets.only(top: 100),
+              width: width,
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(25),
+                      topRight: const Radius.circular(25))),
+              child: Column(
+                children: [
+                  status == false
+                      ? Column(
+                          children: [
+                            textfield('ຂໍ້ມູນຜູ້ສົ່ງ'),
+                            const SizedBox(height: 5),
+                            namephusong(width),
+                            const SizedBox(height: 15),
+                            surnamephusong(width),
+                            const SizedBox(height: 15),
+                            Container(
+                              width: width,
+                              child: Row(
+                                children: [
+                                  selecttelphusong(width),
+                                  const SizedBox(width: 15),
+                                  phonephusong(width)
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            addressphusong(width),
+                            const SizedBox(height: 15),
+                            textfield('ຂໍ້ມູນຜູ້ຮັບ'),
+                            const SizedBox(height: 5),
+                            namephuhub(width),
+                            const SizedBox(height: 15),
+                            surnamephuhub(width),
+                            const SizedBox(height: 15),
+                            Container(
+                              width: width,
+                              child: Row(
+                                children: [
+                                  selecttelphuhub(width),
+                                  const SizedBox(width: 15),
+                                  phonephuhub(width)
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            addressphuhub(width),
+                            const SizedBox(height: 15),
+                          ],
+                        )
+                      : Container(),
+                  status == true
+                      ? Column(
+                          children: [
+                            textfield('ຂໍ້ມູນສາຂາ'),
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                textfield('ຂໍ້ມູນຜູ້ສົ່ງ'),
-                                const SizedBox(height: 5),
-                                namephusong(width),
-                                const SizedBox(height: 15),
-                                surnamephusong(width),
-                                const SizedBox(height: 15),
-                                Container(
-                                  width: width,
-                                  child: Row(
-                                    children: [
-                                      selecttelphusong(width),
-                                      const SizedBox(width: 15),
-                                      phonephusong(width)
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                addressphusong(width),
-                                const SizedBox(height: 15),
-                                textfield('ຂໍ້ມູນຜູ້ຮັບ'),
-                                const SizedBox(height: 5),
-                                namephuhub(width),
-                                const SizedBox(height: 15),
-                                surnamephuhub(width),
-                                const SizedBox(height: 15),
-                                Container(
-                                  width: width,
-                                  child: Row(
-                                    children: [
-                                      selecttelphuhub(width),
-                                      const SizedBox(width: 15),
-                                      phonephuhub(width)
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                addressphuhub(width),
-                                const SizedBox(height: 15),
+                                selectsakhaTonthang(width),
+                                selectsakhapiythang(width)
                               ],
-                            )
-                          : Container(),
-                      status == true
-                          ? Column(
+                            ),
+                            const SizedBox(height: 10),
+                            textfield('ຂໍ້ມູນພັດສະດຸ'),
+                            const SizedBox(height: 10),
+                            namepasadu(width),
+                            const SizedBox(height: 17),
+                            categorie(width),
+                            const SizedBox(height: 17),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [widthheigth(width), numnuk(width)],
+                            ),
+                            const SizedBox(height: 17),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                textfield('ຂໍ້ມູນພັດສະດຸ'),
-                                const SizedBox(height: 10),
-                                namepasadu(width),
-                                const SizedBox(height: 17),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                Container(
+                                  width: width * 0.50,
+                                  height: 45,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      var number = int.parse(
+                                          Random().nextInt(1000).toString());
+
+                                      orderItemController.addItem(
+                                        2022 + number,
+                                        idcategory.toString(),
+                                        controllerparcel.text.toString(),
+                                        controllernumnuk.text.toString(),
+                                        controllerwidthheight.text.toString(),
+                                      );
+                                      setState(() {
+                                        controllerparcel.text = '';
+                                        controllernumnuk.text = '';
+                                        controllerwidthheight.text = '';
+                                      });
+                                    },
+                                    child: Text(
+                                      'Add Item',
+                                      style: TextStyle(
+                                        fontFamily: 'nsl_bold',
+                                        fontSize: 15,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Stack(
                                   children: [
-                                    selectsakhaTonthang(width),
-                                    selectsakhapiythang(width)
+                                    IconButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      OrderItemDetail()));
+                                        },
+                                        icon: Icon(
+                                          Icons.shopping_cart,
+                                          color: Colors.grey,
+                                          size: 35,
+                                        )),
+                                    GetBuilder<OrderItemController>(
+                                        init: OrderItemController(),
+                                        builder: (cont) =>
+                                            Column(children: <Widget>[
+                                              orderItemController.items.isNotEmpty
+                                        ? Positioned(
+                                            
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              width: 20,
+                                              height: 20,
+                                              decoration: BoxDecoration(
+                                                color: Colors.red,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Text(
+                                                orderItemController.items.length
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 10,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ))
+                                        : Container(),
+                                            ])),
                                   ],
                                 ),
-                                const SizedBox(height: 17),
-                                categorie(width),
-                                const SizedBox(height: 17),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [widthheigth(width), numnuk(width)],
-                                ),
-                                const SizedBox(height: 17),
-                                Container(
-                                  width: width,
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      border: Border.all(
-                                          width: 1, color: Colors.red)),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text('ໝາຍເຫດ',
-                                          style: TextStyle(
-                                              fontFamily: 'nsl_bold',
-                                              fontSize: 20,
-                                              color: Colors.red)),
-                                      const Text(
-                                          'ຄ່າບໍລິການແມ່ນຕ້ອງອິງຕາມການຄິດໄລ່ຕົວຈິງຂອງພະນັກງານ ເຄເອັນເອັມ',
-                                          style: const TextStyle(
-                                              fontFamily: 'nsl_bold',
-                                              fontSize: 14)),
-                                    ],
-                                  ),
-                                )
                               ],
+                            ),
+                            const SizedBox(height: 17),
+                            Container(
+                              width: width,
+                              margin: EdgeInsets.only(bottom: 25),
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border:
+                                      Border.all(width: 1, color: Colors.red)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text('ໝາຍເຫດ',
+                                      style: TextStyle(
+                                          fontFamily: 'nsl_bold',
+                                          fontSize: 20,
+                                          color: Colors.red)),
+                                  const Text(
+                                      'ຄ່າບໍລິການແມ່ນຕ້ອງອິງຕາມການຄິດໄລ່ຕົວຈິງຂອງພະນັກງານ ເຄເອັນເອັມ',
+                                      style: const TextStyle(
+                                          fontFamily: 'nsl_bold',
+                                          fontSize: 14)),
+                                ],
+                              ),
                             )
-                          : Container(),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: status == true
-                            ? MainAxisAlignment.spaceBetween
-                            : MainAxisAlignment.center,
-                        children: [
-                          status == true
-                              ? Container(
-                                  width: status == true
-                                      ? width * 0.40
-                                      : width * 0.80,
-                                  height: 45,
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              status = false;
-                                            });
-                                          },
-                                          child: const Text(
-                                            'ຍ້ອນກັບ',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.white),
-                                          ))))
-                              : const Text(''),
-                          Container(
+                          ],
+                        )
+                      : Container(),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: status == true
+                        ? MainAxisAlignment.spaceBetween
+                        : MainAxisAlignment.center,
+                    children: [
+                      status == true
+                          ? Container(
                               width:
                                   status == true ? width * 0.40 : width * 0.80,
                               height: 45,
                               child: ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
                                   child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          primary: Colors.green),
                                       onPressed: () {
-                                        if (status == true) {
-                                          _insertphuhub();
-                                          _insertphusong();
-                                        }
                                         setState(() {
-                                          status = true;
+                                          status = false;
                                         });
                                       },
                                       child: const Text(
-                                        'ຢືນຢັນ',
+                                        'ຍ້ອນກັບ',
                                         style: TextStyle(
                                             fontSize: 16, color: Colors.white),
-                                      )))),
-                        ],
-                      )
+                                      ))))
+                          : const Text(''),
+                      Container(
+                          width: status == true ? width * 0.40 : width * 0.80,
+                          height: 45,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.green),
+                                  onPressed: () {
+                                    if (status == true) {
+                                      _insertphuhub();
+                                      _insertphusong();
+                                    }
+
+                                    setState(() {
+                                      status = true;
+                                    });
+                                  },
+                                  child: const Text(
+                                    'ຢືນຢັນ',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.white),
+                                  )))),
                     ],
-                  ),
-                ),
+                  )
+                ],
               ),
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 
@@ -708,7 +809,7 @@ class _CreateOrderState extends State<CreateOrder> {
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
           controller: controllernameaddressphuhub,
-          keyboardType: TextInputType.number,
+          keyboardType: TextInputType.name,
           style: TextStyle(
               fontSize: 16,
               fontFamily: 'nsl_bold',
@@ -735,7 +836,7 @@ class _CreateOrderState extends State<CreateOrder> {
         borderRadius: BorderRadius.circular(15),
         child: TextFormField(
           controller: controllernameaddressphusong,
-          keyboardType: TextInputType.number,
+          keyboardType: TextInputType.name,
           style: TextStyle(
               fontSize: 16,
               fontFamily: 'nsl_bold',

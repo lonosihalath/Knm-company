@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 class CallApi {
   final String _url = 'http://10.0.2.2:8000/api/';
   final String _urlorder = 'http://10.0.2.2:8000/api/order/insert';
+  final String _urlprofile = 'http://10.0.2.2:8000/api/user/edit/';
   postData(
     data,
     apiUrl,
@@ -31,6 +32,16 @@ class CallApi {
     var fullUrl = _url + apiUrl;
     return await http.post(Uri.parse(fullUrl),
         body: jsonEncode(data), headers: _setHeaders());
+  }
+
+  postDataProfile_user(
+    data,
+    apiUrl,
+    token,
+  ) async {
+    var fullUrl = _urlprofile + apiUrl;
+    return await http.post(Uri.parse(fullUrl),
+        body: jsonEncode(data), headers: _setHeaders1(token));
   }
 
 
