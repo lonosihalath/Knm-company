@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:knm/callapi/api_signup_signin.dart';
+import 'package:knm/condition/condition_screen.dart';
 import 'package:knm/screen/callcenter/callcenter.dart';
 import 'package:knm/screen/home/homepage.dart';
 import 'package:knm/screen/order/order_controller.dart';
@@ -137,11 +138,12 @@ class _User_ProfileState extends State<User_Profile> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.clear();
     showDialog(context: context, builder: (context) => dialog3());
-    Timer(Duration(seconds: 2), () {
-      Navigator.pop(context);
+    Future.delayed(Duration(seconds: 2),(){
+      controller.photoList.clear();
+      orderShowController.onInit();
+       Navigator.pop(context);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomePage_Screen()));
-      controller.photoList.clear();
     });
 
     // Navigator.pushAndRemoveUntil(
@@ -204,7 +206,7 @@ class _User_ProfileState extends State<User_Profile> {
                           height: 100,
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(50),
-                              child: Image.network(
+                              child: Image.network(controller.photoList.isEmpty ? '' :
                                 controller.photoList[0].profile.toString(),
                                 fit: BoxFit.cover,
                               )));
@@ -227,10 +229,10 @@ class _User_ProfileState extends State<User_Profile> {
               ),
             ),
             SizedBox(height: 10),
-            Text(controller.photoList[0].name.toString(),
+            Text(controller.photoList.isEmpty ? 'ຊື່' :controller.photoList[0].name.toString(),
                 style: TextStyle(
                     color: Colors.white, fontFamily: 'nsl_bold', fontSize: 18)),
-            Text(controller.photoList[0].email.toString(),
+            Text(controller.photoList.isEmpty ? 'ອີເມວ' :controller.photoList[0].email.toString(),
                 style: TextStyle(
                     color: Colors.white, fontFamily: 'nsl_bold', fontSize: 18)),
             SizedBox(height: 40),
@@ -286,7 +288,7 @@ class _User_ProfileState extends State<User_Profile> {
                           fontSize: 20),
                     ),
                     onTap: () {
-                      //Get.to(Myaccount());
+                      Get.to(ConditionScreen());
                     },
                   ),
                   ListTile(
@@ -330,7 +332,6 @@ class _User_ProfileState extends State<User_Profile> {
               await _googleSignIn.signOut();
               Navigator.pop(context);
               _Logout();
-              orderShowController.onInit();
             },
           ),
           CupertinoDialogAction(

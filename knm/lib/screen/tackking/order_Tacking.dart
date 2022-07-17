@@ -14,12 +14,12 @@ class Order_Tacking extends StatefulWidget {
   final orderId;
   final status;
   final int index;
-  Order_Tacking({
-    Key? key,
-    required this.orderId,
-    required this.index,
-    required this.status
-  }) : super(key: key);
+  Order_Tacking(
+      {Key? key,
+      required this.orderId,
+      required this.index,
+      required this.status})
+      : super(key: key);
 
   @override
   _Order_TackingState createState() => _Order_TackingState();
@@ -32,8 +32,10 @@ class _Order_TackingState extends State<Order_Tacking> {
   @override
   void initState() {
     super.initState();
-   _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+    data();
+    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
       data();
+      //orderShowController.onInit();
     });
   }
 
@@ -108,7 +110,7 @@ class _Order_TackingState extends State<Order_Tacking> {
           status1 = true;
           status2 = false;
           status3 = false;
-          status4 = false;
+          status4 = false;  
           status5 = false;
         });
       } else {
@@ -130,7 +132,7 @@ class _Order_TackingState extends State<Order_Tacking> {
               status5 = false;
             });
           }
-          if (resdatastatus == 'Arrived'|| widget.status.toString() == 'Arrived' ) {
+          if (resdatastatus == 'Arrived') {
             setState(() {
               status1 = true;
               status2 = true;
@@ -139,7 +141,7 @@ class _Order_TackingState extends State<Order_Tacking> {
               status5 = false;
             });
           } else {
-            if (resdatastatus == 'Picked'|| widget.status.toString() == 'Picked') {
+            if (resdatastatus == 'Picked') {
               setState(() {
                 status1 = true;
                 status2 = true;
@@ -155,7 +157,6 @@ class _Order_TackingState extends State<Order_Tacking> {
       print('error');
     }
     return Scaffold(
-
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         elevation: 1,

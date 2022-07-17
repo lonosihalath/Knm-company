@@ -72,7 +72,7 @@ class _SskhaData_ScreenState extends State<SskhaData_Screen> {
                           margin: EdgeInsets.all(5),
                           padding: EdgeInsets.all(5),
                           width: width,
-                          height: 80,
+                          
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
                               color: Colors.grey.shade100),

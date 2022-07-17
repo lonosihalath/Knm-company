@@ -16,12 +16,14 @@ class OrderShowController extends GetxController {
   void fetchProducts() async {
     try {
       isLoading(true);
+  
       var products = await RemoteServiceOrder.fetchData();
       if (products != null) {
         statetList.value = products;
       }
     } finally {
-      isLoading(false);
+        isLoading(false);
+
     }
   }
 }

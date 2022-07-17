@@ -90,7 +90,7 @@ class _User_detailState extends State<User_detail> {
                       return Container(
                           padding: EdgeInsets.all(15),
                           width: width,
-                          height: 300,
+                          height: 320,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
                               color: Colors.white),

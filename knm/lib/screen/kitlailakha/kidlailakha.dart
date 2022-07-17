@@ -88,7 +88,7 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
                       selectsakhapiythang(),
                       SizedBox(height: 5),
                       textfield('ນໍ້າໜັກລວມ'),
-                      SizedBox(height: 5),
+                      SizedBox(height: 5), 
                       Row(
                         children: [
                           inputnumnuk(width),

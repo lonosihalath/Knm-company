@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:knm/brand/brand_controller.dart';
@@ -7,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:knm/brand/widget.dart';
 import 'package:knm/categories/comtroller.dart';
 import 'package:knm/categories/widget.dart';
+import 'package:knm/screen/home/homepage.dart';
 import 'package:knm/screen/order/controller_orderitem.dart';
 import 'package:knm/screen/order/orderItemDetail.dart';
 import 'package:knm/screen/order/order_controller.dart';
@@ -25,6 +27,8 @@ class _CreateOrderState extends State<CreateOrder> {
   void initState() {
     super.initState();
     findUser();
+    currentSelectedValuetelphuhub = tel[0];
+    currentSelectedValuetelphusong = tel[0];
   }
 
   late var Userid = '';
@@ -63,6 +67,7 @@ class _CreateOrderState extends State<CreateOrder> {
   var currentSelectedValuepiythang;
   var currentSelectedValuecategories;
   late int _selectedAddress1 = 1;
+
   static var tel = [
     "020",
     "030",
@@ -90,27 +95,36 @@ class _CreateOrderState extends State<CreateOrder> {
       "order_month": DateFormat('MM').format(selectedDate),
       "order_year": DateFormat('yyyy').format(selectedDate),
       "status": "Hello world",
-      "order_items": List.generate(
-        orderItemController.items.length,
-        (index) => {
-          "category_id": orderItemController.items.values
-              .toList()[index]
-              .categoryId
-              .toString(),
-          "parcel_name": orderItemController.items.values
-              .toList()[index]
-              .parcelname
-              .toString(),
-          "weight": orderItemController.items.values
-              .toList()[index]
-              .weight
-              .toString(),
-          "width_height": orderItemController.items.values
-              .toList()[index]
-              .widthheight
-              .toString(),
-        },
-      )
+      "order_items": orderItemController.items.length.toInt() != 0
+          ? List.generate(
+              orderItemController.items.length,
+              (index) => {
+                "category_id": orderItemController.items.values
+                    .toList()[index]
+                    .categoryId
+                    .toString(),
+                "parcel_name": orderItemController.items.values
+                    .toList()[index]
+                    .parcelname
+                    .toString(),
+                "weight": orderItemController.items.values
+                    .toList()[index]
+                    .weight
+                    .toString(),
+                "width_height": orderItemController.items.values
+                    .toList()[index]
+                    .widthheight
+                    .toString(),
+              },
+            )
+          : [
+              {
+                "category_id": idcategory.toString(),
+                "parcel_name": controllerparcel.text.toString(),
+                "weight": controllernumnuk.text.toString(),
+                "width_height": controllerwidthheight.text.toString(),
+              }
+            ],
     };
 
     var resorder = await CallApiOrder().postDataupOrder(
@@ -119,9 +133,17 @@ class _CreateOrderState extends State<CreateOrder> {
       token,
     );
     print('Response status: ${resorder.statusCode}');
-    if(resorder.statusCode == 200){
-       orderShowController.onInit();
-       orderItemController.clear();
+    if (resorder.statusCode == 200) {
+      orderItemController.clear();
+      orderShowController.onInit();
+      Future.delayed(Duration(seconds: 3), () {
+        orderShowController.onInit();
+        Navigator.pop(context);
+        Get.snackbar('ທ່ານຟາກເຄື່ອງ', 'ສຳເລັດແລ້ວ !!!',
+            snackPosition: SnackPosition.TOP);
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (lono) => HomePage_Screen()));
+      });
     }
   }
 
@@ -132,7 +154,8 @@ class _CreateOrderState extends State<CreateOrder> {
     var dataphuhub = {
       "recipient_name": controllernamephuhub.text,
       "recipient_surname": controllersurnamephuhub.text,
-      "recipient_tel": controllernamephonephuhub.text,
+      "recipient_tel": currentSelectedValuetelphuhub.toString() +
+          controllernamephonephuhub.text,
       "recipient_address": controllernameaddressphuhub.text,
     };
 
@@ -159,7 +182,8 @@ class _CreateOrderState extends State<CreateOrder> {
     var datapuhsong = {
       "sender_name": controllernamephusong.text,
       "sender_surname": controllersurnamephusong.text,
-      "sender_tel": controllernamephonephusong.text,
+      "sender_tel": currentSelectedValuetelphusong.toString() +
+          controllernamephonephusong.text,
       "sender_address": controllernameaddressphusong.text,
     };
 
@@ -349,24 +373,65 @@ class _CreateOrderState extends State<CreateOrder> {
                                   height: 45,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      var number = int.parse(
-                                          Random().nextInt(1000).toString());
+                                      if (controllerparcel.text.length
+                                              .toInt() ==
+                                          0) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (lono) => dialog(context,
+                                                'ກະລຸນາປ້ອນຊື່ພັດສະດຸ'));
+                                      } else {
+                                        if (currentSelectedValuecategories ==
+                                            null) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (lono) => dialog(context,
+                                                  'ກະລຸນາເລືອກປະເພດພັດສະດຸ'));
+                                        } else {
+                                          if (controllerwidthheight.text.length
+                                                  .toInt() ==
+                                              0) {
+                                            showDialog(
+                                                context: context,
+                                                builder: (lono) => dialog(
+                                                    context,
+                                                    'ກະລຸນາປ້ອນລວງສູງ + ລວງກ້ວາງ + ລວງຍາວ'));
+                                          } else {
+                                            if (controllernumnuk.text.length
+                                                    .toInt() ==
+                                                0) {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (lono) => dialog(
+                                                      context,
+                                                      'ກະລຸນາປ້ອນໜັກພັດສະດຸ'));
+                                            } else {
+                                              var number = int.parse(Random()
+                                                  .nextInt(1000)
+                                                  .toString());
 
-                                      orderItemController.addItem(
-                                        2022 + number,
-                                        idcategory.toString(),
-                                        controllerparcel.text.toString(),
-                                        controllernumnuk.text.toString(),
-                                        controllerwidthheight.text.toString(),
-                                      );
-                                      setState(() {
-                                        controllerparcel.text = '';
-                                        controllernumnuk.text = '';
-                                        controllerwidthheight.text = '';
-                                      });
+                                              orderItemController.addItem(
+                                                2022 + number,
+                                                idcategory.toString(),
+                                                controllerparcel.text
+                                                    .toString(),
+                                                controllernumnuk.text
+                                                    .toString(),
+                                                controllerwidthheight.text
+                                                    .toString(),
+                                              );
+                                              setState(() {
+                                                controllerparcel.text = '';
+                                                controllernumnuk.text = '';
+                                                controllerwidthheight.text = '';
+                                              });
+                                            }
+                                          }
+                                        }
+                                      }
                                     },
                                     child: Text(
-                                      'Add Item',
+                                      'ເພີ່ມພັດສະດຸ',
                                       style: TextStyle(
                                         fontFamily: 'nsl_bold',
                                         fontSize: 15,
@@ -394,35 +459,51 @@ class _CreateOrderState extends State<CreateOrder> {
                                         init: OrderItemController(),
                                         builder: (cont) =>
                                             Column(children: <Widget>[
-                                              orderItemController.items.isNotEmpty
-                                        ? Positioned(
-                                            
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              width: 20,
-                                              height: 20,
-                                              decoration: BoxDecoration(
-                                                color: Colors.red,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Text(
-                                                orderItemController.items.length
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 10,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ))
-                                        : Container(),
+                                              orderItemController
+                                                      .items.isNotEmpty
+                                                  ? Positioned(
+                                                      child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      width: 20,
+                                                      height: 20,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.red,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: Text(
+                                                        orderItemController
+                                                            .items.length
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                    ))
+                                                  : Container(),
                                             ])),
                                   ],
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 17),
+                            const SizedBox(height: 5),
+                            Row(
+                              children: [
+                                Text(
+                                  'ພັດສະດຸເພີ່ມໄດ້ຫຼາຍກ່ວາ 1 ພັດສະດຸ',
+                                  style: TextStyle(
+                                      fontFamily: 'nsl_bold',
+                                      fontSize: 13,
+                                      color: Colors.grey.shade800),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 15),
                             Container(
                               width: width,
                               margin: EdgeInsets.only(bottom: 25),
@@ -433,6 +514,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                       Border.all(width: 1, color: Colors.red)),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                // ignore: prefer_const_literals_to_create_immutables
                                 children: [
                                   const Text('ໝາຍເຫດ',
                                       style: TextStyle(
@@ -485,13 +567,204 @@ class _CreateOrderState extends State<CreateOrder> {
                                       primary: Colors.green),
                                   onPressed: () {
                                     if (status == true) {
-                                      _insertphuhub();
-                                      _insertphusong();
+                                      if (orderItemController.items.isEmpty) {
+                                        if (currentSelectedValueTonthang ==
+                                            null) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (lono) => dialog(context,
+                                                  'ກະລຸນາເລືອກສາຂາຕົ້ນທາງ'));
+                                        } else {
+                                          if (currentSelectedValuepiythang ==
+                                              null) {
+                                            showDialog(
+                                                context: context,
+                                                builder: (lono) => dialog(
+                                                    context,
+                                                    'ກະລຸນາເລືອກສາຂາປາຍທາງ'));
+                                          } else {
+                                            if (controllerparcel.text.length
+                                                    .toInt() ==
+                                                0) {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (lono) => dialog(
+                                                      context,
+                                                      'ກະລຸນາປ້ອນຊື່ພັດສະດຸ'));
+                                            } else {
+                                              if (currentSelectedValuecategories ==
+                                                  null) {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (lono) => dialog(
+                                                        context,
+                                                        'ກະລຸນາເລືອກປະເພດພັດສະດຸ'));
+                                              } else {
+                                                if (controllerwidthheight
+                                                        .text.length
+                                                        .toInt() ==
+                                                    0) {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (lono) => dialog(
+                                                          context,
+                                                          'ກະລຸນາປ້ອນລວງສູງ + ລວງກ້ວາງ + ລວງຍາວ'));
+                                                } else {
+                                                  if (controllernumnuk
+                                                          .text.length
+                                                          .toInt() ==
+                                                      0) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (lono) => dialog(
+                                                            context,
+                                                            'ກະລຸນາປ້ອນໜັກພັດສະດຸ'));
+                                                  } else {
+                                                    _insertphuhub();
+                                                    _insertphusong();
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            dialog3());
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
                                     }
-
-                                    setState(() {
-                                      status = true;
-                                    });
+                                    if (controllernamephusong.text.length
+                                                .toInt() ==
+                                            0 &&
+                                        controllersurnamephusong
+                                                .text.length
+                                                .toInt() ==
+                                            0 &&
+                                        controllernamephonephusong
+                                                .text.length
+                                                .toInt() ==
+                                            0 &&
+                                        controllernameaddressphusong
+                                                .text.length
+                                                .toInt() ==
+                                            0 &&
+                                        controllernamephuhub.text.length
+                                                .toInt() ==
+                                            0 &&
+                                        controllersurnamephuhub.text.length
+                                                .toInt() ==
+                                            0 &&
+                                        controllernamephonephuhub.text.length
+                                                .toInt() ==
+                                            0 &&
+                                        controllernameaddressphuhub.text.length
+                                                .toInt() ==
+                                            0) {
+                                      showDialog(
+                                          barrierDismissible: false,
+                                          context: context,
+                                          builder: (lono) => dialog(
+                                              context, 'ກະລຸນາປ້ອນຂໍ້ມູນ'));
+                                    } else {
+                                      if (controllernamephusong.text.length
+                                              .toInt() ==
+                                          0) {
+                                        showDialog(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            builder: (lono) => dialog(context,
+                                                'ກະລຸນາປ້ອນຊື່ຜູ້ສົ່ງ'));
+                                      } else {
+                                        if (controllersurnamephusong.text.length
+                                                .toInt() ==
+                                            0) {
+                                          showDialog(
+                                              barrierDismissible: false,
+                                              context: context,
+                                              builder: (lono) => dialog(context,
+                                                  'ກະລຸນາປ້ອນນາມສະກຸນຜູ້ສົ່ງ'));
+                                        } else {
+                                          if (controllernamephonephusong
+                                                  .text.length
+                                                  .toInt() ==
+                                              0) {
+                                            showDialog(
+                                                barrierDismissible: false,
+                                                context: context,
+                                                builder: (lono) => dialog(
+                                                    context,
+                                                    'ກະລຸນາປ້ອນເບີໂທຜູ້ສົ່ງ'));
+                                          } else {
+                                            if (controllernameaddressphusong
+                                                    .text.length
+                                                    .toInt() ==
+                                                0) {
+                                              showDialog(
+                                                  barrierDismissible: false,
+                                                  context: context,
+                                                  builder: (lono) => dialog(
+                                                      context,
+                                                      'ກະລຸນາປ້ອນທີ່ຢູ່ຜູ້ສົ່ງ'));
+                                            } else {
+                                              if (controllernamephuhub
+                                                      .text.length
+                                                      .toInt() ==
+                                                  0) {
+                                                showDialog(
+                                                    barrierDismissible: false,
+                                                    context: context,
+                                                    builder: (lono) => dialog(
+                                                        context,
+                                                        'ກະລຸນາປ້ອນຊື່ຜູ້ຮັບ'));
+                                              } else {
+                                                if (controllersurnamephuhub
+                                                        .text.length
+                                                        .toInt() ==
+                                                    0) {
+                                                  showDialog(
+                                                      barrierDismissible: false,
+                                                      context: context,
+                                                      builder: (lono) => dialog(
+                                                          context,
+                                                          'ກະລຸນາປ້ອນນາມສະກຸນຜູ້ຮັບ'));
+                                                } else {
+                                                  if (controllernamephonephuhub
+                                                          .text.length
+                                                          .toInt() ==
+                                                      0) {
+                                                    showDialog(
+                                                        barrierDismissible:
+                                                            false,
+                                                        context: context,
+                                                        builder: (lono) => dialog(
+                                                            context,
+                                                            'ກະລຸນາປ້ອນເບີໂທຜູ້ຮັບ'));
+                                                  } else {
+                                                    if (controllernameaddressphuhub
+                                                            .text.length
+                                                            .toInt() ==
+                                                        0) {
+                                                      showDialog(
+                                                          barrierDismissible:
+                                                              false,
+                                                          context: context,
+                                                          builder: (lono) => dialog(
+                                                              context,
+                                                              'ກະລຸນາປ້ອນທີ່ຢູ່ຜູ້ຮັບ'));
+                                                    } else {
+                                                      setState(() {
+                                                        status = true;
+                                                      });
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
                                   },
                                   child: const Text(
                                     'ຢືນຢັນ',
@@ -506,6 +779,34 @@ class _CreateOrderState extends State<CreateOrder> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget dialog3() => const CupertinoAlertDialog(
+        title: Center(child: CircularProgressIndicator()),
+        content: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Center(child: Text('ກະລຸນາລໍຖ້າ')),
+        ),
+      );
+
+  CupertinoAlertDialog dialog(BuildContext context, String text) {
+    return CupertinoAlertDialog(
+      title: Column(
+        children: [],
+      ),
+      content: Text(
+        text,
+        style: TextStyle(fontFamily: 'nsl_regular', fontSize: 15),
+      ),
+      actions: [
+        CupertinoDialogAction(
+          child: Text('ຕົກລົງ'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ],
     );
   }
 

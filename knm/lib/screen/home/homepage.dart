@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +12,9 @@ import 'package:knm/screen/kitlailakha/kidlailakha.dart';
 import 'package:knm/screen/order/detail_order.dart';
 import 'package:knm/screen/order/order_controller.dart';
 import 'package:knm/screen/order/show_order_model.dart';
+import 'package:knm/screen/order/widget_order.dart/order_widget.dart';
 import 'package:knm/screen/tackking/order.dart';
-import 'package:knm/screen/tackking/order_Tacking.dart';
+import 'package:http/http.dart' as http;
 import 'package:knm/signin_signup/signIN_signUp.dart';
 import 'package:knm/signin_signup/user_account/controller.dart';
 import 'package:knm/signin_signup/user_profile.dart';
@@ -35,11 +39,13 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
   late List<String> textmain2 = ['ກຳລັງຈັດສົ່ງ', 'ສົ່ງສຳເລັດ'];
   late List<String> textmain3 = ['ກຳລັງຈັດສົ່ງ', 'ສົ່ງສຳເລັດ'];
   late String texttap = '';
-  final List<String> imgList = ['images/lazada3.jpg', 'images/lazada4.jpg'];
+  final List<String> imgList = ['images/images1.jpg', 'images/images2.jpg'];
   late int selected = 0;
   late int selected1 = 0;
   late int selected2 = 0;
   late int selected3 = 0;
+
+  Timer? _timer;
 
   @override
   void initState() {
@@ -47,6 +53,12 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
     findUser();
     controller.onInit();
     orderShowController.onInit();
+  }
+
+  void data() {
+    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+      orderShowController.onInit();
+    });
   }
 
   var Usertoken;
@@ -72,6 +84,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
 
   @override
   Widget build(BuildContext context) {
+    orderShowController.onInit();
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -112,6 +125,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                           }
                           if (texttap == 'ພັດສະດຸ') {
                             setState(() {
+                              orderShowController.onInit();
                               statusTab2 = true;
                               orderShowController.onInit();
                             });
@@ -159,7 +173,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
       body: Container(
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('images/bg.png'), fit: BoxFit.cover)),
+                image: AssetImage('images/bg.png'), fit:BoxFit.cover)),
         child: Center(
           child: SingleChildScrollView(
             child: statusTab1 == true
@@ -181,13 +195,13 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                         items: imgList
                             .map((item) => Container(
                                 margin: EdgeInsets.all(10),
-                                height: 350,
+                                height: 380,
                                 width: width,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.asset(
                                     item,
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.fill,
                                   ),
                                 )))
                             .toList(),
@@ -228,16 +242,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                 },
                                 child: Container(
                                     width: 60,
-                                    child: Obx(() {
-                                      if (controller.isLoading.value)
-                                        return Center(
-                                          child: CircularProgressIndicator(
-                                              color: Colors.white),
-                                        );
-                                      else {
-                                        return controller.photoList.length
-                                                    .toInt() !=
-                                                0
+                                    child:controller.photoList.isNotEmpty
                                             ? Container(
                                                 width: 60,
                                                 height: 60,
@@ -251,9 +256,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                                           .toString(),
                                                       fit: BoxFit.cover,
                                                     )))
-                                            : Image.asset('images/profile.png');
-                                      }
-                                    })))
+                                            : Image.asset('images/profile.png')))
                           ],
                         ),
                       ),
@@ -273,25 +276,27 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                               children: [
                                 GestureDetector(
                                     onTap: () {
-                                    controller.photoList.isEmpty ? Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  Signin_SignUP())) :  Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CreateOrder()));
+                                      controller.photoList.isEmpty
+                                          ? Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Signin_SignUP()))
+                                          : Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CreateOrder()));
                                     },
                                     child: item_main(
-                                        'images/kong1.png',
-                                        'ຝາກເຄື່ອງເອງ',
-                                        Container(
-                                              width: 80,
-                                              height: 80,
-                                              child: Image.asset(
-                                                  'images/kong1.png',
-                                                  fit: BoxFit.contain)),)),
+                                      'images/kong1.png',
+                                      'ຝາກເຄື່ອງເອງ',
+                                      Container(
+                                          width: 80,
+                                          height: 80,
+                                          child: Image.asset('images/kong1.png',
+                                              fit: BoxFit.contain)),
+                                    )),
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
@@ -302,12 +307,14 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                     });
                                   },
                                   child: item_main(
-                                      'images/kong2.png', 'ພັດສະດຸຂອງຂ້ອຍ',Container(
-                                              width: 80,
-                                              height: 80,
-                                              child: Image.asset(
-                                                  'images/kong2.png',
-                                                  fit: BoxFit.contain)),),
+                                    'images/kong2.png',
+                                    'ພັດສະດຸຂອງຂ້ອຍ',
+                                    Container(
+                                        width: 80,
+                                        height: 80,
+                                        child: Image.asset('images/kong2.png',
+                                            fit: BoxFit.contain)),
+                                  ),
                                 ),
                                 GestureDetector(
                                   onTap: () {
@@ -318,11 +325,13 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                                 Kidlailakha_screen()));
                                   },
                                   child: item_main(
-                                      'images/kong5.png', 'ຄິດໄລ່ຄ່າຂົນສົ່ງ',Container(
-                                        width: 100,
-                                              child: Image.asset(
-                                                  'images/kong5.png',
-                                                  fit: BoxFit.contain)),),
+                                    'images/kong5.png',
+                                    'ຄິດໄລ່ຄ່າຂົນສົ່ງ',
+                                    Container(
+                                        width: 95,
+                                        child: Image.asset('images/kong5.png',
+                                            fit: BoxFit.contain)),
+                                  ),
                                 ),
                                 GestureDetector(
                                     onTap: () {
@@ -333,27 +342,37 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                                   SskhaData_Screen()));
                                     },
                                     child: item_main(
-                                        'images/kong3.png', 'ຂໍ້ມູນສາຂາ',Container(
-                                              width: 90,
-                                              height: 90,
-                                              child: Image.asset(
-                                                  'images/kong3.png',
-                                                  fit: BoxFit.contain)),)),
+                                      'images/kong3.png',
+                                      'ຂໍ້ມູນສາຂາ',
+                                      Container(
+                                          width: 90,
+                                          height: 90,
+                                          child: Image.asset('images/kong3.png',
+                                              fit: BoxFit.contain)),
+                                    )),
                                 GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  OrderTotacking()));
+                                      controller.photoList.isEmpty
+                                          ? Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Signin_SignUP()))
+                                          : Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      OrderTotacking()));
                                     },
                                     child: item_main(
-                                        'images/kong4.png', 'Prackink',Container(
-                                              width: 80,
-                                              height: 90,
-                                              child: Image.asset(
-                                                  'images/kong1.png',
-                                                  fit: BoxFit.contain)),)),
+                                      'images/kong4.png',
+                                      'ຕິດຕາມເຄື່ອງ',
+                                      Container(
+                                          width: 80,
+                                          height: 90,
+                                          child: Image.asset('images/kong1.png',
+                                              fit: BoxFit.contain)),
+                                    )),
                                 // GestureDetector(
                                 //     onTap: () {
                                 //       Navigator.push(
@@ -374,57 +393,6 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                     ? Container(
                         child: Column(
                         children: [
-                          // Container(
-                          //   padding: EdgeInsets.all(5),
-                          //   width: width * 0.95,
-                          //   height: 50,
-                          //   decoration: BoxDecoration(
-                          //       borderRadius: BorderRadius.circular(5),
-                          //       color: Colors.white,
-                          //       border: Border.all(
-                          //           width: 2, color: Color(0xFFFEBA00))),
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //     children: List.generate(
-                          //         textmain1.length,
-                          //         (index) => GestureDetector(
-                          //               onTap: () {
-                          //                 setState(() {
-                          //                   selected1 = index;
-                          //                   statussubTab1 = !statussubTab1;
-                          //                   statussubTab2 = !statussubTab2;
-                          //                 });
-                          //               },
-                          //               child: Column(
-                          //                 children: [
-                          //                   Container(
-                          //                     width: width * 0.45,
-                          //                     height: 35,
-                          //                     alignment: Alignment.center,
-                          //                     decoration: BoxDecoration(
-                          //                         borderRadius:
-                          //                             BorderRadius.circular(5),
-                          //                         color: selected1 == index
-                          //                             ? Color(0xff1380F7)
-                          //                             : Colors.white),
-                          //                     child: Text(
-                          //                       textmain1[index],
-                          //                       style: TextStyle(
-                          //                           fontSize: 18,
-                          //                           fontFamily: 'nsl_bold',
-                          //                           color: selected1 == index
-                          //                               ? Colors.white
-                          //                               : Color(0xFF1380F7)),
-                          //                     ),
-                          //                   ),
-                          //                 ],
-                          //               ),
-                          //             )),
-                          //   ),
-                          // ),
-                          //SizedBox(height: 15),
-                          //inputIdorder(width),
-                          //SizedBox(height: 35),
                           statussubTab1 == true
                               ? Container(
                                   padding: EdgeInsets.all(5),
@@ -546,46 +514,60 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                   child: Column(
                                 children: [
                                   Usertoken != null
-                                      ? Column(
-                                          children: [
-                                            selected2.toInt() == 0
-                                                ? showorder(
-                                                    width,
-                                                    orderShowController
-                                                        .statetList
-                                                        .where((p0) =>
-                                                            p0.attributes!
-                                                                .status
-                                                                .toString() ==
-                                                            'Pending' ||  p0.attributes!
-                                                                .status
-                                                                .toString() ==
-                                                            'Confirmed' ||  p0.attributes!
-                                                                .status
-                                                                .toString() ==
-                                                            'Processing'||  p0.attributes!
-                                                                .status
-                                                                .toString() ==
-                                                            'Arrived' )
-                                                        .toList(),
-                                                    Colors.orange)
-                                                : selected2.toInt() == 1
-                                                    ? showorder(
-                                                        width,
-                                                        orderShowController
+                                      ? Obx(() {
+                                          if (orderShowController
+                                              .isLoading.value) {
+                                            return Column(
+                                              children: [
+                                                SizedBox(height: 100),
+                                                Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                ),
+                                              ],
+                                            );
+                                          } else {
+                                            return Column(
+                                              children: [
+                                                selected2.toInt() == 0
+                                                    ? OrderWidget(
+                                                        ordershowModel: orderShowController
                                                             .statetList
                                                             .where((p0) =>
+                                                                p0.attributes!.status.toString() == 'Pending' ||
                                                                 p0.attributes!
-                                                                    .status
-                                                                    .toString() ==
-                                                                'Picked')
+                                                                        .status
+                                                                        .toString() ==
+                                                                    'Confirmed' ||
+                                                                p0.attributes!
+                                                                        .status
+                                                                        .toString() ==
+                                                                    'Processing' ||
+                                                                p0.attributes!
+                                                                        .status
+                                                                        .toString() ==
+                                                                    'Arrived')
                                                             .toList(),
-                                                        Colors.green)
-                                                    : selected2.toInt() == 2
-                                                        ? Column()
-                                                        : Container(),
-                                          ],
-                                        )
+                                                        color: Colors.orange,
+                                                        width: width,
+                                                      )
+                                                    : selected2.toInt() == 1
+                                                        ? OrderWidget(
+                                                        ordershowModel: orderShowController
+                                                            .statetList
+                                                            .where((p0) =>
+                                                                p0.attributes!.status.toString() == 'Picked')
+                                                            .toList(),
+                                                        color: Colors.green,
+                                                        width: width,
+                                                      )
+                                                        : selected2.toInt() == 2
+                                                            ? Column()
+                                                            : Container(),
+                                              ],
+                                            );
+                                          }
+                                        })
                                       : Column(
                                           children: [
                                             SizedBox(height: 100),
@@ -759,195 +741,116 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
     );
   }
 
-  Column showorder(double width, List<OrdershowModel> ordershowModel, color) {
-    return Column(
-      children: [
-        SizedBox(height: 25),
-        ordershowModel.length.toInt() != 0 && ordershowModel.isNotEmpty
-            ? Obx(() {
-                if (orderShowController.isLoading.value)
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                else {
-                  return Column(
-                      children: List.generate(
-                          ordershowModel.length,
-                          (index) => Stack(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => DetailOrder(
-                                                    idrecipient:
-                                                        ordershowModel[index]
-                                                            .attributes!
-                                                            .recipientId
-                                                            .toString(),
-                                                    idorder:
-                                                        ordershowModel[index]
-                                                            .id
-                                                            .toString(),
-                                                    tonthang:
-                                                        ordershowModel[index]
-                                                            .attributes!
-                                                            .originalBranch
-                                                            .toString(),
-                                                    piythang:
-                                                        ordershowModel[index]
-                                                            .attributes!
-                                                            .destinationBranch
-                                                            .toString(),
-                                                    orderItem:
-                                                        ordershowModel[index]
-                                                            .attributes!
-                                                            .orderItem!
-                                                            .toList(),
-                                                    idcategories:
-                                                        ordershowModel[index]
-                                                            .attributes!
-                                                            .orderItem![0]
-                                                            .attribute!
-                                                            .categoryId
-                                                            .toString(),
-                                                  )));
-                                    },
-                                    child: Container(
-                                        padding: EdgeInsets.all(10),
-                                        margin: EdgeInsets.only(bottom: 10),
-                                        width: width,
-                                        height: 100,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            color: Colors.grey.shade100),
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                                width: 65,
-                                                child: Image.asset(
-                                                    'images/box.png')),
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                  left: 10, top: 15),
-                                              child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(ordershowModel[index]
-                                                        .attributes!
-                                                        .invoiceId
-                                                        .toString()),
-                                                    Text('name: ' +
-                                                        ordershowModel[index]
-                                                            .attributes!
-                                                            .orderItem![0]
-                                                            .attribute!
-                                                            .parcelName
-                                                            .toString()),
-                                                  ]),
-                                            ),
-                                          ],
-                                        )),
-                                  ),
-                                  Positioned(
-                                      top: 10,
-                                      right: 10,
-                                      child: Container(
-                                          alignment: Alignment.center,
-                                          width: 100,
-                                          height: 30,
-                                          child: Text(
-                                            ordershowModel[index]
-                                                .attributes!
-                                                .status
-                                                .toString(),
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                          decoration: BoxDecoration(
-                                              color: color,
-                                              borderRadius:
-                                                  BorderRadius.circular(10))))
-                                ],
-                              )));
-                }
-              })
-            : Column(
-                children: [
-                  Container(
-                    color: Colors.white,
-                    width: 110,
-                    height: 110,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(55),
-                        child: Image.asset('images/logo.jpeg')),
-                  ),
-                  SizedBox(height: 10),
-                  Text('ບໍ່ມີຂໍ້ມູນ',
-                      style: TextStyle(
-                          fontFamily: 'nsl_bold',
-                          color: Colors.black,
-                          fontSize: 18)),
-                ],
-              ),
-      ],
+ 
+
+  Future<http.Response> deleteData(String id) async {
+    showDialog(context: context, builder: (context) => dialog3());
+    print(id);
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? token = sharedPreferences.getString('token');
+    final http.Response response = await http.post(
+      Uri.parse('http://10.0.2.2:8000/api/order/delete/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
     );
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      print('object');
+      orderShowController.onInit();
+      Future.delayed(Duration(seconds: 4), () {
+        Navigator.pop(context);
+        orderShowController.onInit();
+        _timer!.cancel();
+      });
+    } else {
+      print('object');
+      _timer!.cancel();
+    }
+    return response;
   }
 
-  Container senheing(double width) {
-    return Container(
-      width: width * 0.95,
-      height: 1.1,
-      color: Color(0xFF266FFF),
-    );
-  }
+  Widget dialog3() => const CupertinoAlertDialog(
+        title: Center(child: CircularProgressIndicator()),
+        content: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Center(child: Text('ກະລຸນາລໍຖ້າ')),
+        ),
+      );
 
-  Container item_main(String image, text, Container container) {
-    return Container(
-      padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: Colors.grey.shade200, width: 2)),
-      width: 150,
-      child: Column(
-        children: [
-          container,
-          SizedBox(height: 5),
-          Text(text, style: TextStyle(fontFamily: 'nsl_bold', fontSize: 16))
+  Widget dialog(BuildContext context, String id) => CupertinoAlertDialog(
+        title: Text(''),
+        content: Text('ທ່ານຕ້ອງການຍົກເລີກລາຍການນີ້ຫຼືບໍ່?'),
+        actions: [
+          CupertinoDialogAction(
+            child: Text('Ok'),
+            onPressed: () {
+              Navigator.pop(context);
+              data();
+              deleteData(id.toString());
+            },
+          ),
+          CupertinoDialogAction(
+            child: Text('Cancel'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         ],
-      ),
-    );
-  }
+      );
+}
+
+Container senheing(double width) {
+  return Container(
+    width: width * 0.95,
+    height: 1.1,
+    color: Color(0xFF266FFF),
+  );
+}
+
+Container item_main(String image, text, Container container) {
+  return Container(
+    alignment: Alignment.center,
+    padding: EdgeInsets.all(15),
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(color: Colors.grey.shade200, width: 2)),
+    width: 150,
+    height: 165,
+    child: Column(
+      children: [
+        container,
+        SizedBox(height: 5),
+        Text(text, style: TextStyle(fontFamily: 'nsl_bold', fontSize: 16))
+      ],
+    ),
+  );
+}
 
 ///////////////////////////////////////////////////
-  Container inputIdorder(double screen) {
-    return Container(
-      width: screen * 0.95,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: TextFormField(
-          keyboardType: TextInputType.emailAddress,
-          style: TextStyle(
-              fontSize: 16,
-              fontFamily: 'nsl_bold',
-              color: Colors.grey.shade800),
-          decoration: InputDecoration(
-            suffixIcon: Icon(Icons.search),
-            hintText: 'ກະລຸນາໃສ່ເລກໃບບິນ',
-            hintStyle: TextStyle(
-              fontSize: 16,
-              color: Colors.grey.shade600,
-              fontFamily: 'nsl_bold',
-            ),
-            fillColor: Colors.white,
-            filled: true,
-            border: InputBorder.none,
+Container inputIdorder(double screen) {
+  return Container(
+    width: screen * 0.95,
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: TextFormField(
+        keyboardType: TextInputType.emailAddress,
+        style: TextStyle(
+            fontSize: 16, fontFamily: 'nsl_bold', color: Colors.grey.shade800),
+        decoration: InputDecoration(
+          suffixIcon: Icon(Icons.search),
+          hintText: 'ກະລຸນາໃສ່ເລກໃບບິນ',
+          hintStyle: TextStyle(
+            fontSize: 16,
+            color: Colors.grey.shade600,
+            fontFamily: 'nsl_bold',
           ),
+          fillColor: Colors.white,
+          filled: true,
+          border: InputBorder.none,
         ),
       ),
-    );
-  }
+    ),
+  );
 }

@@ -1,18 +1,15 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'dart:async';
-
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:get/get.dart';
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:knm/brand/brand_controller.dart';
-import 'package:knm/callapi/OTPController.dart';
 import 'package:knm/callapi/api_signup_signin.dart';
 import 'package:knm/categories/comtroller.dart';
+import 'package:knm/condition/condition_screen.dart';
 import 'package:knm/screen/home/homepage.dart';
 import 'package:knm/screen/order/order_controller.dart';
 import 'package:knm/signin_signup/user_account/controller.dart';
@@ -35,6 +32,7 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
   bool statesurname = false;
   bool stateemail2 = false;
   bool statepassword2 = false;
+  bool statephone = false;
 
   bool isChecked = false;
 
@@ -58,9 +56,9 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
       'name': name.text,
       'surname': surname.text,
       'email': email2.text,
-      'phone': '56677603',
-      'birth': '18',
-      'gender': 'ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ',
+      'phone': phone.text,
+      'birth': 'ຕັ້ງຄ່າ',
+      'gender': 'ຕັ້ງຄ່າ',
       'password': password2.text,
       'password_confirmation': password2.text,
     };
@@ -102,12 +100,14 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', body['token']);
       localStorage.setString('id', json.encode(body['user']['id']));
-      controller.onInit();
-      Navigator.pop(context);
       orderShowController.onInit();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomePage_Screen()));
-
+      controller.onInit();
+      Timer(Duration(seconds: 2), () {
+              controller.onInit();
+              Navigator.pop(context);
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => HomePage_Screen()));
+            });
       localStorage.setString('phone', body['user']['phone']);
     } else {
       print('No!!!!!!!!!!!!!!!!!!');
@@ -148,6 +148,23 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
             child: Text('Ok'),
             onPressed: () {
               Navigator.pop(context);
+            },
+          ),
+        ],
+      );
+  Widget dialog4() => CupertinoAlertDialog(
+        title: Column(
+          children: [
+            Icon(Icons.warning,
+                color: Color.fromARGB(255, 255, 21, 0), size: 35),
+            Text(''),
+          ],
+        ),
+        content: Text('ກະລຸນາຍອມຮັບເງື່ອນໄຂ ແລະ ຂໍ້ກຳນົດ'),
+        actions: [
+          CupertinoDialogAction(
+            child: Text('Ok'),
+            onPressed: () {
               Navigator.pop(context);
             },
           ),
@@ -207,7 +224,7 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 120),
+                  SizedBox(height: 70),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -270,58 +287,7 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
                             statepassword1 == true
                                 ? varidator('ປ້ອນລະຫັດຜ່ານ')
                                 : varidator(''),
-                            //                       Column(
-                            //   children: [
-                            //     SizedBox(height: 50),
-                            //     SizedBox(
-                            //       height: 60,
-                            //       width: 400,
-                            //       child: CountryCodePicker(
-                            //         onChanged: (country) {
-                            //           setState(() {
-                            //             dialDodeDigis = country.dialCode!;
-                            //           });
-                            //         },
-                            //         initialSelection: "Laos",
-                            //         showCountryOnly: false,
-                            //         showOnlyCountryWhenClosed: false,
-                            //         favorite: ["+856", "laos"],
-                            //       ),
-                            //     ),
-                            //     Container(
-                            //       margin: EdgeInsets.only(top: 10, right: 10, left: 10),
-                            //       child: TextField(
-                            //         maxLength: 10,
-                            //         decoration: InputDecoration(
-                            //             hintText: "Phone Number",
-                            //             prefix: Padding(
-                            //                 child: Text(dialDodeDigis + '20'),
-                            //                 padding: EdgeInsets.all(4))),
-                            //         keyboardType: TextInputType.number,
-                            //         controller: _controller,
-                            //       ),
-                            //     ),
-                            //     Container(
-                            //       margin: EdgeInsets.all(15),
-                            //       width: double.infinity,
-                            //       child: ElevatedButton(
-                            //         child: Text(
-                            //           'Next',
-                            //           style:
-                            //               TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                            //         ),
-                            //         onPressed: () {
-                            //           Navigator.push(
-                            //               context,
-                            //               MaterialPageRoute(
-                            //                   builder: (context) => OTP_Screen(
-                            //                       phone: _controller.text,
-                            //                       codeDigits: dialDodeDigis)));
-                            //         },
-                            //       ),
-                            //     )
-                            //   ],
-                            // ),
+
                             forgetPassword(),
                             buttonLogingoogle(width, height),
                             buttonLogin(width),
@@ -345,6 +311,15 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
                             SizedBox(height: 5),
                             statesurname == true
                                 ? varidator('ປ້ອນນາມສະກຸນ')
+                                : SizedBox(
+                                    height: 5,
+                                  ),
+                            text('ໂທລະສັບ'),
+                            SizedBox(height: 5),
+                            inputphone(width),
+                            SizedBox(height: 5),
+                            statesurname == true
+                                ? varidator('ປ້ອນເບີໂທ')
                                 : SizedBox(
                                     height: 5,
                                   ),
@@ -374,10 +349,34 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
                                   onChanged: (bool? value) {
                                     setState(() {
                                       isChecked = value!;
+                                      print(isChecked);
                                     });
                                   },
                                 ),
-                                text('ຍອມຮັບເງື່ອໄຂ ແລະ ຂໍ້ກຳນົດ')
+                                text('ຍອມຮັບເງື່ອໄຂ ແລະ ຂໍ້ກຳນົດ'),
+                                SizedBox(width: 15),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          bottom: BorderSide(
+                                              color: Colors.white, width: 2))),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (builder) =>
+                                                  ConditionScreen()));
+                                    },
+                                    child: Text(
+                                      'ເພີ່ມເຕີມ',
+                                      style: TextStyle(
+                                          fontFamily: 'nsl_regular',
+                                          color: Colors.white,
+                                          fontSize: 16),
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                             buttonregister(width)
@@ -515,6 +514,7 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
             branchController.onInit();
             controller.onInit();
             Timer(Duration(seconds: 2), () {
+              controller.onInit();
               Navigator.pop(context);
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => HomePage_Screen()));
@@ -658,6 +658,26 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
       ),
     );
   }
+  Container inputphone(double screen) {
+    return Container(
+      width: screen * 0.90,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: TextFormField(
+          keyboardType: TextInputType.emailAddress,
+          style: TextStyle(fontSize: 16),
+          controller: phone,
+          decoration: InputDecoration(
+            hintText: 'ໂທລະສັບ',
+            hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+            fillColor: Colors.white,
+            filled: true,
+            border: InputBorder.none,
+          ),
+        ),
+      ),
+    );
+  }
 
   Container inputPassword2(double screen) {
     return Container(
@@ -739,13 +759,28 @@ class _Signin_SignUPState extends State<Signin_SignUP> {
               statepassword2 = false;
             });
           }
-          if (name.text.isNotEmpty &&
-              surname.text.isNotEmpty &&
-              email2.text.isEmpty &&
-              password2.text.isEmpty) {
+          if (phone.text.isEmpty) {
+            setState(() {
+              statephone = true;
+            });
+          } else {
+            setState(() {
+              statephone = false;
+            });
+          }
+          if (name.text.length.toInt() == 0 &&
+              surname.text.length.toInt() == 0 &&
+              phone.text.length.toInt() == 0&&
+              email2.text.length.toInt() == 0 &&
+              password2.text.length.toInt() == 0){
             print(0);
           } else {
-            _register();
+            if(isChecked == true){
+              _register();
+            }else{
+              showDialog(context: context, builder: (context) => dialog4());
+            }
+            
             print('1');
           }
         },

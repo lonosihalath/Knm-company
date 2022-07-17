@@ -23,7 +23,10 @@ class _OrderTotackingState extends State<OrderTotacking> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('ຕິດຕາມເຄື່ອງ'),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
