@@ -96,37 +96,37 @@ class _CreateOrderState extends State<CreateOrder> {
       "order_year": DateFormat('yyyy').format(selectedDate),
       "status": "Hello world",
       "order_items":
-      //  orderItemController.items.length.toInt() != 0
-      //     ? List.generate(
-      //         orderItemController.items.length,
-      //         (index) => {
-      //           "category_id": orderItemController.items.values
-      //               .toList()[index]
-      //               .categoryId
-      //               .toString(),
-      //           "parcel_name": orderItemController.items.values
-      //               .toList()[index]
-      //               .parcelname
-      //               .toString(),
-      //           "weight": orderItemController.items.values
-      //               .toList()[index]
-      //               .weight
-      //               .toString(),
-      //           "width_height": orderItemController.items.values
-      //               .toList()[index]
-      //               .widthheight
-      //               .toString(),
-      //         },
-      //       )
-      //     : 
+          //  orderItemController.items.length.toInt() != 0
+          //     ? List.generate(
+          //         orderItemController.items.length,
+          //         (index) => {
+          //           "category_id": orderItemController.items.values
+          //               .toList()[index]
+          //               .categoryId
+          //               .toString(),
+          //           "parcel_name": orderItemController.items.values
+          //               .toList()[index]
+          //               .parcelname
+          //               .toString(),
+          //           "weight": orderItemController.items.values
+          //               .toList()[index]
+          //               .weight
+          //               .toString(),
+          //           "width_height": orderItemController.items.values
+          //               .toList()[index]
+          //               .widthheight
+          //               .toString(),
+          //         },
+          //       )
+          //     :
           [
-              {
-                "category_id": idcategory.toString(),
-                "parcel_name": controllerparcel.text.toString(),
-                "weight": controllernumnuk.text.toString(),
-                "width_height": controllerwidthheight.text.toString(),
-              }
-            ],
+        {
+          "category_id": idcategory.toString(),
+          "parcel_name": controllerparcel.text.toString(),
+          "weight": controllernumnuk.text.toString(),
+          "width_height": controllerwidthheight.text.toString(),
+        }
+      ],
     };
 
     var resorder = await CallApiOrder().postDataupOrder(
@@ -572,69 +572,68 @@ class _CreateOrderState extends State<CreateOrder> {
                                       // if (orderItemController.items.length
                                       //         .toInt() ==
                                       //     0) {
-                                        if (currentSelectedValueTonthang ==
+                                      if (currentSelectedValueTonthang ==
+                                          null) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (lono) => dialog(context,
+                                                'ກະລຸນາເລືອກສາຂາຕົ້ນທາງ'));
+                                      } else {
+                                        if (currentSelectedValuepiythang ==
                                             null) {
                                           showDialog(
                                               context: context,
                                               builder: (lono) => dialog(context,
-                                                  'ກະລຸນາເລືອກສາຂາຕົ້ນທາງ'));
+                                                  'ກະລຸນາເລືອກສາຂາປາຍທາງ'));
                                         } else {
-                                          if (currentSelectedValuepiythang ==
-                                              null) {
+                                          if (controllerparcel.text.length
+                                                  .toInt() ==
+                                              0) {
                                             showDialog(
                                                 context: context,
                                                 builder: (lono) => dialog(
                                                     context,
-                                                    'ກະລຸນາເລືອກສາຂາປາຍທາງ'));
+                                                    'ກະລຸນາປ້ອນຊື່ພັດສະດຸ'));
                                           } else {
-                                            if (controllerparcel.text.length
-                                                    .toInt() ==
-                                                0) {
+                                            if (currentSelectedValuecategories ==
+                                                null) {
                                               showDialog(
                                                   context: context,
                                                   builder: (lono) => dialog(
                                                       context,
-                                                      'ກະລຸນາປ້ອນຊື່ພັດສະດຸ'));
+                                                      'ກະລຸນາເລືອກປະເພດພັດສະດຸ'));
                                             } else {
-                                              if (currentSelectedValuecategories ==
-                                                  null) {
+                                              if (controllerwidthheight
+                                                      .text.length
+                                                      .toInt() ==
+                                                  0) {
                                                 showDialog(
                                                     context: context,
                                                     builder: (lono) => dialog(
                                                         context,
-                                                        'ກະລຸນາເລືອກປະເພດພັດສະດຸ'));
+                                                        'ກະລຸນາປ້ອນລວງສູງ + ລວງກ້ວາງ + ລວງຍາວ'));
                                               } else {
-                                                if (controllerwidthheight
-                                                        .text.length
+                                                if (controllernumnuk.text.length
                                                         .toInt() ==
                                                     0) {
                                                   showDialog(
                                                       context: context,
                                                       builder: (lono) => dialog(
                                                           context,
-                                                          'ກະລຸນາປ້ອນລວງສູງ + ລວງກ້ວາງ + ລວງຍາວ'));
+                                                          'ກະລຸນາປ້ອນໜັກພັດສະດຸ'));
                                                 } else {
-                                                  if (controllernumnuk
-                                                          .text.length
-                                                          .toInt() ==
-                                                      0) {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (lono) => dialog(
-                                                            context,
-                                                            'ກະລຸນາປ້ອນໜັກພັດສະດຸ'));
-                                                  }else{
-                                                      _insertphuhub();
-                                        _insertphusong();
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) => dialog3());
-                                                  }
+                                                  _insertphuhub();
+                                                  _insertphusong();
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          dialog3());
                                                 }
                                               }
                                             }
                                           }
                                         }
+                                      }
                                       // } else {
                                       //   _insertphuhub();
                                       //   _insertphusong();
@@ -764,6 +763,8 @@ class _CreateOrderState extends State<CreateOrder> {
                                                     } else {
                                                       setState(() {
                                                         status = true;
+                                                        categoriesController
+                                                            .onInit();
                                                       });
                                                     }
                                                   }
@@ -1168,7 +1169,7 @@ class _CreateOrderState extends State<CreateOrder> {
 
   Container selectsakhaTonthang(double width) {
     return Container(
-      width: width * 0.40,
+      width: width * 0.43,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: FormField<String>(
@@ -1181,7 +1182,7 @@ class _CreateOrderState extends State<CreateOrder> {
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   style: TextStyle(
-                      fontSize: 16.0,
+                      fontSize: 12.0,
                       fontFamily: 'nsl_bold',
                       color: Colors.grey.shade800),
                   hint: Text(
@@ -1199,12 +1200,36 @@ class _CreateOrderState extends State<CreateOrder> {
                     });
                     print(currentSelectedValueTonthang);
                   },
-                  items: sakha.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+                  items: currentSelectedValuepiythang.toString() ==
+                          'ສາຂາ1 ( ບ້ານ ຊຽງຄວນ )'
+                      ? sakha21.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList()
+                      : currentSelectedValuepiythang.toString() ==
+                              'ສາຂາ2 ( ບ້ານ ໄຊສະຫວ່າງ )'
+                          ? sakha22.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList()
+                          : currentSelectedValuepiythang.toString() ==
+                                  'ສາຂາ3 ( ບ້ານ ດົງປ່າແຫຼບ )'
+                              ? sakha23.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList()
+                              : sakha.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
                 ),
               ),
             );
@@ -1216,7 +1241,7 @@ class _CreateOrderState extends State<CreateOrder> {
 
   Container selectsakhapiythang(double width) {
     return Container(
-      width: width * 0.40,
+      width: width * 0.43,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: FormField<String>(
@@ -1229,7 +1254,7 @@ class _CreateOrderState extends State<CreateOrder> {
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   style: TextStyle(
-                      fontSize: 16.0,
+                      fontSize: 12.0,
                       fontFamily: 'nsl_bold',
                       color: Colors.grey.shade800),
                   hint: Text(
@@ -1247,12 +1272,36 @@ class _CreateOrderState extends State<CreateOrder> {
                     });
                     print(currentSelectedValuepiythang);
                   },
-                  items: sakha.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+                  items: currentSelectedValueTonthang.toString() ==
+                          'ສາຂາ1 ( ບ້ານ ຊຽງຄວນ )'
+                      ? sakha21.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList()
+                      : currentSelectedValueTonthang.toString() ==
+                              'ສາຂາ2 ( ບ້ານ ໄຊສະຫວ່າງ )'
+                          ? sakha22.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList()
+                          : currentSelectedValueTonthang.toString() ==
+                                  'ສາຂາ3 ( ບ້ານ ດົງປ່າແຫຼບ )'
+                              ? sakha23.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList()
+                              : sakha.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
                 ),
               ),
             );

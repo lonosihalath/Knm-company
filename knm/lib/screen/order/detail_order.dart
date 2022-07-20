@@ -227,22 +227,22 @@ class _DetailOrderState extends State<DetailOrder> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(height: 5),
-                                    Text('ສິນຄ້າທີ:  ${index + 1}',
+                                    Text('ສິນຄ້າທີ:      ${index + 1}',
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontFamily: 'nsl_bold',
                                             color: Colors.black)),
                                     SizedBox(height: 3),
-                                    Text('ຊື່ພັດສະດຸ: ' +
+                                    Text('ຊື່ພັດສະດຸ:     ' +
                                         widget.orderItem[index].attribute!
                                             .parcelName
                                             .toString()),
-                                    Text('ນໍ້າໜັກ: ' +
+                                    Text('ນໍ້າໜັກ:     ' +
                                         widget
                                             .orderItem[index].attribute!.weight
                                             .toString() +
                                         ' km'),
-                                    Text('ລວງຍາວ+ລວງສູງ: ' +
+                                    Text('ລວງຍາວ+ລວງສູງ:     ' +
                                         widget.orderItem[index].attribute!
                                             .widthHeigth
                                             .toString() +
@@ -254,7 +254,7 @@ class _DetailOrderState extends State<DetailOrder> {
                                                 widget.orderItem[index]
                                                     .attribute!.categoryId)
                                             .toList(),
-                                        'ປະເພດສິນຄ້າ: '),
+                                        'ປະເພດສິນຄ້າ:      '),
                                     SizedBox(height: 7),
                                     Container(
                                       width: width,
@@ -288,7 +288,7 @@ class _DetailOrderState extends State<DetailOrder> {
   }
 
   Text databrand(List<Brand> brand, text) {
-    return Text(text + brand[0].name + ' (${brand[0].state})',
+    return Text(text + brand[0].name,
         style: TextStyle(fontSize: 16, fontFamily: 'nsl_regular'));
   }
 
@@ -308,25 +308,25 @@ class _DetailOrderState extends State<DetailOrder> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('ຊື່: ' + recipientList[0].name,
+            Text('ຊື່:     ' + recipientList[0].name,
                 style: TextStyle(
                   color: Colors.grey.shade800,
                   fontSize: 16,
                   fontFamily: 'nsl_regular',
                 )),
-            Text('ນາມສະກຸນ: ' + recipientList[0].surname,
+            Text('ນາມສະກຸນ:     ' + recipientList[0].surname,
                 style: TextStyle(
                   color: Colors.grey.shade800,
                   fontSize: 16,
                   fontFamily: 'nsl_regular',
                 )),
-            Text('ເບີໂທຕິດຕໍ່: ' + recipientList[0].tel,
+            Text('ເບີໂທຕິດຕໍ່:     ' + recipientList[0].tel,
                 style: TextStyle(
                   color: Colors.grey.shade800,
                   fontSize: 16,
                   fontFamily: 'nsl_regular',
                 )),
-            Text('ທີ່ຢູ່: ' + recipientList[0].address,
+            Text('ທີ່ຢູ່:     ' + recipientList[0].address,
                 style: TextStyle(
                   color: Colors.grey.shade800,
                   fontSize: 16,
@@ -349,25 +349,25 @@ class _DetailOrderState extends State<DetailOrder> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('ຊື່: ' + senderList[0].name,
+            Text('ຊື່:     ' + senderList[0].name,
                 style: TextStyle(
                   color: Colors.grey.shade800,
                   fontSize: 16,
                   fontFamily: 'nsl_regular',
                 )),
-            Text('ນາມສະກຸນ: ' + senderList[0].surname,
+            Text('ນາມສະກຸນ:     ' + senderList[0].surname,
                 style: TextStyle(
                   color: Colors.grey.shade800,
                   fontSize: 16,
                   fontFamily: 'nsl_regular',
                 )),
-            Text('ເບີໂທຕິດຕໍ່: ' + senderList[0].tel,
+            Text('ເບີໂທຕິດຕໍ່:     ' + senderList[0].tel,
                 style: TextStyle(
                   color: Colors.grey.shade800,
                   fontSize: 16,
                   fontFamily: 'nsl_regular',
                 )),
-            Text('ທີ່ຢູ່: ' + senderList[0].address,
+            Text('ທີ່ຢູ່:     ' + senderList[0].address,
                 style: TextStyle(
                   color: Colors.grey.shade800,
                   fontSize: 16,

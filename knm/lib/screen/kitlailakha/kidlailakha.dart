@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:knm/price/price_cm/controller.dart';
+import 'package:knm/price/price_nn/controller.dart';
 
 class Kidlailakha_screen extends StatefulWidget {
   const Kidlailakha_screen({Key? key}) : super(key: key);
@@ -12,6 +15,16 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
   TextEditingController heigth = TextEditingController();
   TextEditingController width2 = TextEditingController();
   TextEditingController weigth = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    priceCMController.onInit();
+    priceNNController.onInit();
+  }
+
+  PriceCMController priceCMController = Get.put(PriceCMController());
+  PriceNNController priceNNController = Get.put(PriceNNController());
 
   int price = 6000;
   double amout = 0;
@@ -88,7 +101,7 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
                       selectsakhapiythang(),
                       SizedBox(height: 5),
                       textfield('ນໍ້າໜັກລວມ'),
-                      SizedBox(height: 5), 
+                      SizedBox(height: 5),
                       Row(
                         children: [
                           inputnumnuk(width),
@@ -176,7 +189,6 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
                 setState(() {
                   amout = 0;
                 });
-              
               },
             ),
           ),
@@ -196,13 +208,17 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
                   luam = int.parse(width1.text.toString()) +
                       int.parse(width2.text.toString()) +
                       int.parse(heigth.text.toString());
-                  
+
                   // amout = amout * 6000;
                   nn = double.parse(weigth.text);
                   if (luam > double.parse(weigth.text)) {
-                    amout = luam.toDouble() * price /6;
+                    amout = luam.toDouble() *
+                        int.parse(
+                            priceCMController.statetList[0].price.toString());
                   } else {
-                    amout = nn.toDouble() * price /6;
+                    amout = nn.toDouble() *
+                        int.parse(
+                            priceNNController.statetList[0].price.toString());
                   }
                 });
               },
