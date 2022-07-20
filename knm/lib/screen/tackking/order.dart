@@ -24,7 +24,8 @@ class _OrderTotackingState extends State<OrderTotacking> {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: Text('ຕິດຕາມເຄື່ອງ'),
+        title: const Text('ຕິດຕາມເຄື່ອງ', style: TextStyle(
+              fontFamily: 'nsl_bold', color: Colors.white, fontSize: 20)),
         centerTitle: true,
       ),
       body: Padding(

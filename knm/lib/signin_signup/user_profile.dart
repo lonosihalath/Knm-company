@@ -140,7 +140,7 @@ class _User_ProfileState extends State<User_Profile> {
     showDialog(context: context, builder: (context) => dialog3());
     Future.delayed(Duration(seconds: 2),(){
       controller.photoList.clear();
-      orderShowController.onInit();
+      orderShowController.statetList.clear();
        Navigator.pop(context);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomePage_Screen()));
@@ -191,9 +191,7 @@ class _User_ProfileState extends State<User_Profile> {
                 showCupertinoModalPopup(
                     context: context, builder: (context) => photo(context));
               },
-              child: Stack(
-                children: [
-                  Obx(() {
+              child: Obx(() {
                     if (controller.isLoading.value)
                       return Center(
                         child: CircularProgressIndicator(
@@ -202,31 +200,16 @@ class _User_ProfileState extends State<User_Profile> {
                       );
                     else {
                       return Container(
-                          width: 100,
-                          height: 100,
+                          width: 110,
+                          height: 110,
                           child: ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
+                              borderRadius: BorderRadius.circular(55),
                               child: Image.network(controller.photoList.isEmpty ? '' :
                                 controller.photoList[0].profile.toString(),
                                 fit: BoxFit.cover,
                               )));
                     }
                   }),
-                  Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                          alignment: Alignment.center,
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18),
-                              border: Border.all(width: 2, color: Colors.blue),
-                              color: Colors.white),
-                          child: Icon(Icons.camera_enhance,
-                              color: Colors.blue, size: 22)))
-                ],
-              ),
             ),
             SizedBox(height: 10),
             Text(controller.photoList.isEmpty ? 'ຊື່' :controller.photoList[0].name.toString(),

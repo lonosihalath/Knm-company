@@ -16,7 +16,9 @@ import 'package:http/http.dart' as http;
 
 class DetailOrder extends StatefulWidget {
   final String idrecipient;
+  final String idsender;
   final String idorder;
+  final String idinvoid;
   final String idcategories;
   final String tonthang;
   final String piythang;
@@ -26,7 +28,9 @@ class DetailOrder extends StatefulWidget {
   const DetailOrder(
       {Key? key,
       required this.idrecipient,
+      required this.idsender,
       required this.idorder,
+      required this.idinvoid,
       required this.tonthang,
       required this.idcategories,
       required this.piythang,
@@ -86,7 +90,7 @@ class _DetailOrderState extends State<DetailOrder> {
       //////////////////////////////////////////////////////////////////////////
       final responsedata = await http.get(
           Uri.parse(
-              'http://10.0.2.2:8000/api/sender/show/${widget.idrecipient}'),
+              'http://10.0.2.2:8000/api/sender/show/${widget.idsender}'),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -117,7 +121,8 @@ class _DetailOrderState extends State<DetailOrder> {
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title: Text('ລາຍລະອຽດອໍເດີ້'),
+          title: Text('ລາຍລະອຽດພັດສະດຸ', style: TextStyle(
+                                  fontSize: 20, fontFamily: 'nsl_bold')),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -140,13 +145,13 @@ class _DetailOrderState extends State<DetailOrder> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('ໄອດີພັດສະດຸ : ${widget.idorder}',
+                          Text('ລະຫັດພັດສະດຸ : ${widget.idinvoid}',
                               style: TextStyle(
                                   fontSize: 18, fontFamily: 'nsl_bold')),
                           widget.status.toString() == 'Pending' ?
                           Container(
                             width: 100,
-                            height: 30,
+                            height: 40,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: ElevatedButton(
@@ -167,6 +172,13 @@ class _DetailOrderState extends State<DetailOrder> {
                           ) : Container()
                         ],
                       ),
+
+                      Text('ຂໍ້ມູນການຂົນສົ່ງ',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'nsl_bold',
+                              color: Colors.black)),
+                      SizedBox(height: 5,),
                       Container(
                         margin: EdgeInsets.only(top: 7, bottom: 7),
                         width: width,
@@ -276,7 +288,7 @@ class _DetailOrderState extends State<DetailOrder> {
   }
 
   Text databrand(List<Brand> brand, text) {
-    return Text(text + brand[0].name,
+    return Text(text + brand[0].name + ' (${brand[0].state})',
         style: TextStyle(fontSize: 16, fontFamily: 'nsl_regular'));
   }
 

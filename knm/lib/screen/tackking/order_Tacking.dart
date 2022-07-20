@@ -47,6 +47,7 @@ class _Order_TackingState extends State<Order_Tacking> {
 
   var resdata;
   String resdatastatus = '';
+  String invoidid = '';
 
   Future<void> data() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -67,8 +68,10 @@ class _Order_TackingState extends State<Order_Tacking> {
       setState(() {
         resdata = jsonString1;
         resdatastatus = resdata[0]['attributes']['status'];
+        invoidid = resdata[0]['attributes']['invoice_id'];
       });
       print('status ===>' + resdatastatus);
+      print('invoid ===>' + invoidid);
       //add API response to stream controller sink
 
       print('ok');
@@ -110,7 +113,7 @@ class _Order_TackingState extends State<Order_Tacking> {
           status1 = true;
           status2 = false;
           status3 = false;
-          status4 = false;  
+          status4 = false;
           status5 = false;
         });
       } else {
@@ -170,15 +173,15 @@ class _Order_TackingState extends State<Order_Tacking> {
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            _timer!.cancel();
-            Get.back();
-          },
-        ),
+            onPressed: () {
+              _timer!.cancel();
+              Get.back();
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: 32,
+            )),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -196,7 +199,7 @@ class _Order_TackingState extends State<Order_Tacking> {
                     Row(
                       children: [
                         Text(
-                          'Order ID: ' + widget.orderId.toString(),
+                          'ລະຫັດພັດສະດຸ: ' + invoidid,
                           style: TextStyle(
                               fontSize: 14,
                               fontFamily: 'branding4',

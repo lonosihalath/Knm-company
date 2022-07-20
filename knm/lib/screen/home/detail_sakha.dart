@@ -82,6 +82,15 @@ class _Detail_SakhaState extends State<Detail_Sakha> {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: 32,
+            )),
         title: Text('ລາຍລະອຽດສາຂາ',
             style: TextStyle(
                 fontFamily: 'nsl_bold', color: Colors.white, fontSize: 22)),

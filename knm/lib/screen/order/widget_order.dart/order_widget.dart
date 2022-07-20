@@ -28,7 +28,7 @@ class _OrderWidgetState extends State<OrderWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 25),
+        SizedBox(height: 20),
         widget.ordershowModel.length.toInt() != 0 ||
                 widget.ordershowModel.isNotEmpty
             ? GetBuilder<OrderShowController>(
@@ -57,10 +57,21 @@ class _OrderWidgetState extends State<OrderWidget> {
                                                               .attributes!
                                                               .recipientId
                                                               .toString(),
+                                                          idsender:  widget
+                                                              .ordershowModel[
+                                                                  index]
+                                                              .attributes!
+                                                              .senderId
+                                                              .toString(),
                                                           idorder: widget
                                                               .ordershowModel[
                                                                   index]
                                                               .id
+                                                              .toString(),
+                                                              idinvoid: widget
+                                                              .ordershowModel[
+                                                                  index]
+                                                              .attributes!.invoiceId
                                                               .toString(),
                                                           tonthang: widget
                                                               .ordershowModel[
@@ -155,7 +166,9 @@ class _OrderWidgetState extends State<OrderWidget> {
                                                       color: Colors.white),
                                                 ),
                                                 decoration: BoxDecoration(
-                                                    color: widget.color,
+                                                    color: widget.ordershowModel[index]
+                                                      .attributes!.status
+                                                      .toString() == 'Picked' ? Colors.green : Colors.orange,
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10)))),
@@ -237,7 +250,6 @@ class _OrderWidgetState extends State<OrderWidget> {
   }
 
   Future<http.Response> deleteData(String id) async {
-    orderShowController.statetList.clear();
     showDialog(context: context, builder: (context) => dialog3());
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString('token');

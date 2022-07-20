@@ -36,6 +36,15 @@ class _SskhaData_ScreenState extends State<SskhaData_Screen> {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: 32,
+            )),
         title: Text('ຂໍ້ມູນສາຂາ',
             style: TextStyle(
                 fontFamily: 'nsl_bold', color: Colors.white, fontSize: 22)),

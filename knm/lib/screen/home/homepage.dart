@@ -13,6 +13,7 @@ import 'package:knm/screen/order/detail_order.dart';
 import 'package:knm/screen/order/order_controller.dart';
 import 'package:knm/screen/order/show_order_model.dart';
 import 'package:knm/screen/order/widget_order.dart/order_widget.dart';
+import 'package:knm/screen/search_screen/search_screen.dart';
 import 'package:knm/screen/tackking/order.dart';
 import 'package:http/http.dart' as http;
 import 'package:knm/signin_signup/signIN_signUp.dart';
@@ -28,6 +29,7 @@ class HomePage_Screen extends StatefulWidget {
 }
 
 class _HomePage_ScreenState extends State<HomePage_Screen> {
+  TextEditingController _searchController = TextEditingController();
   ScrollController scrollController = ScrollController();
   bool statusTab1 = true;
   bool statusTab2 = false;
@@ -51,8 +53,8 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
   void initState() {
     super.initState();
     findUser();
-    controller.onInit();
     orderShowController.onInit();
+    controller.onInit();
   }
 
   void data() {
@@ -77,7 +79,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
     });
   }
 
-  final Controller controller = Get.find<Controller>();
+  Controller controller = Get.find<Controller>();
   BranchController branchController = Get.put(BranchController());
   CategoriesController categoriesController = Get.put(CategoriesController());
   OrderShowController orderShowController = Get.put(OrderShowController());
@@ -173,7 +175,7 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
       body: Container(
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('images/bg.png'), fit:BoxFit.cover)),
+                image: AssetImage('images/bg.png'), fit: BoxFit.cover)),
         child: Center(
           child: SingleChildScrollView(
             child: statusTab1 == true
@@ -216,15 +218,57 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: TextFormField(
+                                  controller: _searchController,
                                   keyboardType: TextInputType.emailAddress,
                                   style: TextStyle(fontSize: 16),
+                                  onFieldSubmitted: (value) {
+                                    if(_searchController.text.length.toInt() !=0){
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (lono) => Search_Screen(
+                                                  data: orderShowController
+                                                      .statetList
+                                                      .where((element) => element
+                                                          .attributes!
+                                                          .invoiceId.toString()
+                                                          .toLowerCase()
+                                                          .contains(_searchController
+                                                              .text
+                                                              .toLowerCase()))
+                                                      .toList())));
+                                    }else{
+                                      showDialog(context: context, builder: (context)=> dialog());
+                                    }
+                                  },
                                   decoration: InputDecoration(
-                                    hintText: 'Tracking ID',
+                                    hintText: 'ລະຫັດພັດສະດຸ',
                                     hintStyle: TextStyle(
                                         fontSize: 14, color: Colors.grey),
                                     fillColor: Colors.white,
                                     filled: true,
-                                    suffixIcon: Icon(Icons.search),
+                                    suffixIcon: GestureDetector(
+                                      onTap:(){
+                                         if(_searchController.text.length.toInt() !=0){
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (lono) => Search_Screen(
+                                                  data: orderShowController
+                                                      .statetList
+                                                      .where((element) => element
+                                                          .attributes!
+                                                          .invoiceId.toString()
+                                                          .toLowerCase()
+                                                          .contains(_searchController
+                                                              .text
+                                                              .toLowerCase()))
+                                                      .toList())));
+                                    }else{
+                                      showDialog(context: context, builder: (context)=> dialog());
+                                    }
+                                      },
+                                      child: Icon(Icons.search)),
                                     border: InputBorder.none,
                                   ),
                                 ),
@@ -242,7 +286,12 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                 },
                                 child: Container(
                                     width: 60,
-                                    child:controller.photoList.isNotEmpty
+                                    child: Obx(() {
+                                      if (controller.isLoading.value) {
+                                        return CircularProgressIndicator(
+                                            color: Colors.white);
+                                      } else {
+                                        return controller.photoList.isNotEmpty
                                             ? Container(
                                                 width: 60,
                                                 height: 60,
@@ -256,7 +305,9 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                                           .toString(),
                                                       fit: BoxFit.cover,
                                                     )))
-                                            : Image.asset('images/profile.png')))
+                                            : Image.asset('images/profile.png');
+                                      }
+                                    })))
                           ],
                         ),
                       ),
@@ -553,14 +604,17 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
                                                       )
                                                     : selected2.toInt() == 1
                                                         ? OrderWidget(
-                                                        ordershowModel: orderShowController
-                                                            .statetList
-                                                            .where((p0) =>
-                                                                p0.attributes!.status.toString() == 'Picked')
-                                                            .toList(),
-                                                        color: Colors.green,
-                                                        width: width,
-                                                      )
+                                                            ordershowModel: orderShowController
+                                                                .statetList
+                                                                .where((p0) =>
+                                                                    p0.attributes!
+                                                                        .status
+                                                                        .toString() ==
+                                                                    'Picked')
+                                                                .toList(),
+                                                            color: Colors.green,
+                                                            width: width,
+                                                          )
                                                         : selected2.toInt() == 2
                                                             ? Column()
                                                             : Container(),
@@ -741,8 +795,6 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
     );
   }
 
- 
-
   Future<http.Response> deleteData(String id) async {
     showDialog(context: context, builder: (context) => dialog3());
     print(id);
@@ -779,24 +831,17 @@ class _HomePage_ScreenState extends State<HomePage_Screen> {
         ),
       );
 
-  Widget dialog(BuildContext context, String id) => CupertinoAlertDialog(
+  Widget dialog() => CupertinoAlertDialog(
         title: Text(''),
-        content: Text('ທ່ານຕ້ອງການຍົກເລີກລາຍການນີ້ຫຼືບໍ່?'),
+        content: Text('ກະລຸນາລະບຸ ລະຫັດພັດສະດຸ',style: TextStyle(fontSize: 16),),
         actions: [
           CupertinoDialogAction(
-            child: Text('Ok'),
-            onPressed: () {
-              Navigator.pop(context);
-              data();
-              deleteData(id.toString());
-            },
-          ),
-          CupertinoDialogAction(
-            child: Text('Cancel'),
+            child: Text('ຕົກລົງ'),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
+     
         ],
       );
 }

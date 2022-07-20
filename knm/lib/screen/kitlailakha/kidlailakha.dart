@@ -172,7 +172,12 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
                       side: BorderSide(color: Color(0xFFFEBA00), width: 2))),
               child: Text('ລ້າງຂໍ້ມູນ',
                   style: TextStyle(fontSize: 16, fontFamily: 'nsl_bold')),
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  amout = 0;
+                });
+              
+              },
             ),
           ),
           Container(
@@ -191,12 +196,13 @@ class _Kidlailakha_screenState extends State<Kidlailakha_screen> {
                   luam = int.parse(width1.text.toString()) +
                       int.parse(width2.text.toString()) +
                       int.parse(heigth.text.toString());
+                  
                   // amout = amout * 6000;
                   nn = double.parse(weigth.text);
                   if (luam > double.parse(weigth.text)) {
-                    amout = luam.toDouble() * price;
+                    amout = luam.toDouble() * price /6;
                   } else {
-                    amout = nn.toDouble() * price;
+                    amout = nn.toDouble() * price /6;
                   }
                 });
               },

@@ -95,29 +95,31 @@ class _CreateOrderState extends State<CreateOrder> {
       "order_month": DateFormat('MM').format(selectedDate),
       "order_year": DateFormat('yyyy').format(selectedDate),
       "status": "Hello world",
-      "order_items": orderItemController.items.length.toInt() != 0
-          ? List.generate(
-              orderItemController.items.length,
-              (index) => {
-                "category_id": orderItemController.items.values
-                    .toList()[index]
-                    .categoryId
-                    .toString(),
-                "parcel_name": orderItemController.items.values
-                    .toList()[index]
-                    .parcelname
-                    .toString(),
-                "weight": orderItemController.items.values
-                    .toList()[index]
-                    .weight
-                    .toString(),
-                "width_height": orderItemController.items.values
-                    .toList()[index]
-                    .widthheight
-                    .toString(),
-              },
-            )
-          : [
+      "order_items":
+      //  orderItemController.items.length.toInt() != 0
+      //     ? List.generate(
+      //         orderItemController.items.length,
+      //         (index) => {
+      //           "category_id": orderItemController.items.values
+      //               .toList()[index]
+      //               .categoryId
+      //               .toString(),
+      //           "parcel_name": orderItemController.items.values
+      //               .toList()[index]
+      //               .parcelname
+      //               .toString(),
+      //           "weight": orderItemController.items.values
+      //               .toList()[index]
+      //               .weight
+      //               .toString(),
+      //           "width_height": orderItemController.items.values
+      //               .toList()[index]
+      //               .widthheight
+      //               .toString(),
+      //         },
+      //       )
+      //     : 
+          [
               {
                 "category_id": idcategory.toString(),
                 "parcel_name": controllerparcel.text.toString(),
@@ -262,7 +264,7 @@ class _CreateOrderState extends State<CreateOrder> {
             )),
         title: const Text(
           'ຟາກເຄື່ອງດ້ວຍຕົນເອງ',
-          style: const TextStyle(
+          style: TextStyle(
               fontFamily: 'nsl_bold', color: Colors.white, fontSize: 22),
         ),
         // actions: [
@@ -567,7 +569,9 @@ class _CreateOrderState extends State<CreateOrder> {
                                       primary: Colors.green),
                                   onPressed: () {
                                     if (status == true) {
-                                      if (orderItemController.items.isEmpty) {
+                                      // if (orderItemController.items.length
+                                      //         .toInt() ==
+                                      //     0) {
                                         if (currentSelectedValueTonthang ==
                                             null) {
                                           showDialog(
@@ -619,20 +623,25 @@ class _CreateOrderState extends State<CreateOrder> {
                                                         builder: (lono) => dialog(
                                                             context,
                                                             'ກະລຸນາປ້ອນໜັກພັດສະດຸ'));
-                                                  } else {
-                                                    _insertphuhub();
-                                                    _insertphusong();
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            dialog3());
+                                                  }else{
+                                                      _insertphuhub();
+                                        _insertphusong();
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) => dialog3());
                                                   }
                                                 }
                                               }
                                             }
                                           }
                                         }
-                                      }
+                                      // } else {
+                                      //   _insertphuhub();
+                                      //   _insertphusong();
+                                      //   showDialog(
+                                      //       context: context,
+                                      //       builder: (context) => dialog3());
+                                      // }
                                     }
                                     if (controllernamephusong.text.length
                                                 .toInt() ==

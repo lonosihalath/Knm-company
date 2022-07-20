@@ -20,7 +20,8 @@ class _OrderItemDetailState extends State<OrderItemDetail> {
     double screen = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: Text('ລາຍລະອຽດ'),
+        title: Text('ລາຍລະອຽດ', style: TextStyle(
+              fontFamily: 'nsl_bold', color: Colors.white, fontSize: 22)),
         centerTitle: true,
       ),
       body:  Padding(
