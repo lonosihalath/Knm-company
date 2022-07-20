@@ -367,144 +367,144 @@ class _CreateOrderState extends State<CreateOrder> {
                               children: [widthheigth(width), numnuk(width)],
                             ),
                             const SizedBox(height: 17),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width: width * 0.50,
-                                  height: 45,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      if (controllerparcel.text.length
-                                              .toInt() ==
-                                          0) {
-                                        showDialog(
-                                            context: context,
-                                            builder: (lono) => dialog(context,
-                                                'ກະລຸນາປ້ອນຊື່ພັດສະດຸ'));
-                                      } else {
-                                        if (currentSelectedValuecategories ==
-                                            null) {
-                                          showDialog(
-                                              context: context,
-                                              builder: (lono) => dialog(context,
-                                                  'ກະລຸນາເລືອກປະເພດພັດສະດຸ'));
-                                        } else {
-                                          if (controllerwidthheight.text.length
-                                                  .toInt() ==
-                                              0) {
-                                            showDialog(
-                                                context: context,
-                                                builder: (lono) => dialog(
-                                                    context,
-                                                    'ກະລຸນາປ້ອນລວງສູງ + ລວງກ້ວາງ + ລວງຍາວ'));
-                                          } else {
-                                            if (controllernumnuk.text.length
-                                                    .toInt() ==
-                                                0) {
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (lono) => dialog(
-                                                      context,
-                                                      'ກະລຸນາປ້ອນໜັກພັດສະດຸ'));
-                                            } else {
-                                              var number = int.parse(Random()
-                                                  .nextInt(1000)
-                                                  .toString());
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     Container(
+                            //       width: width * 0.50,
+                            //       height: 45,
+                            //       child: ElevatedButton(
+                            //         onPressed: () {
+                            //           if (controllerparcel.text.length
+                            //                   .toInt() ==
+                            //               0) {
+                            //             showDialog(
+                            //                 context: context,
+                            //                 builder: (lono) => dialog(context,
+                            //                     'ກະລຸນາປ້ອນຊື່ພັດສະດຸ'));
+                            //           } else {
+                            //             if (currentSelectedValuecategories ==
+                            //                 null) {
+                            //               showDialog(
+                            //                   context: context,
+                            //                   builder: (lono) => dialog(context,
+                            //                       'ກະລຸນາເລືອກປະເພດພັດສະດຸ'));
+                            //             } else {
+                            //               if (controllerwidthheight.text.length
+                            //                       .toInt() ==
+                            //                   0) {
+                            //                 showDialog(
+                            //                     context: context,
+                            //                     builder: (lono) => dialog(
+                            //                         context,
+                            //                         'ກະລຸນາປ້ອນລວງສູງ + ລວງກ້ວາງ + ລວງຍາວ'));
+                            //               } else {
+                            //                 if (controllernumnuk.text.length
+                            //                         .toInt() ==
+                            //                     0) {
+                            //                   showDialog(
+                            //                       context: context,
+                            //                       builder: (lono) => dialog(
+                            //                           context,
+                            //                           'ກະລຸນາປ້ອນໜັກພັດສະດຸ'));
+                            //                 } else {
+                            //                   var number = int.parse(Random()
+                            //                       .nextInt(1000)
+                            //                       .toString());
 
-                                              orderItemController.addItem(
-                                                2022 + number,
-                                                idcategory.toString(),
-                                                controllerparcel.text
-                                                    .toString(),
-                                                controllernumnuk.text
-                                                    .toString(),
-                                                controllerwidthheight.text
-                                                    .toString(),
-                                              );
-                                              setState(() {
-                                                controllerparcel.text = '';
-                                                controllernumnuk.text = '';
-                                                controllerwidthheight.text = '';
-                                              });
-                                            }
-                                          }
-                                        }
-                                      }
-                                    },
-                                    child: Text(
-                                      'ເພີ່ມພັດສະດຸ',
-                                      style: TextStyle(
-                                        fontFamily: 'nsl_bold',
-                                        fontSize: 15,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Stack(
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      OrderItemDetail()));
-                                        },
-                                        icon: Icon(
-                                          Icons.shopping_cart,
-                                          color: Colors.grey,
-                                          size: 35,
-                                        )),
-                                    GetBuilder<OrderItemController>(
-                                        init: OrderItemController(),
-                                        builder: (cont) =>
-                                            Column(children: <Widget>[
-                                              orderItemController
-                                                      .items.isNotEmpty
-                                                  ? Positioned(
-                                                      child: Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      width: 20,
-                                                      height: 20,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.red,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                      child: Text(
-                                                        orderItemController
-                                                            .items.length
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 10,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ))
-                                                  : Container(),
-                                            ])),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 5),
-                            Row(
-                              children: [
-                                Text(
-                                  'ພັດສະດຸເພີ່ມໄດ້ຫຼາຍກ່ວາ 1 ພັດສະດຸ',
-                                  style: TextStyle(
-                                      fontFamily: 'nsl_bold',
-                                      fontSize: 13,
-                                      color: Colors.grey.shade800),
-                                ),
-                              ],
-                            ),
+                            //                   orderItemController.addItem(
+                            //                     2022 + number,
+                            //                     idcategory.toString(),
+                            //                     controllerparcel.text
+                            //                         .toString(),
+                            //                     controllernumnuk.text
+                            //                         .toString(),
+                            //                     controllerwidthheight.text
+                            //                         .toString(),
+                            //                   );
+                            //                   setState(() {
+                            //                     controllerparcel.text = '';
+                            //                     controllernumnuk.text = '';
+                            //                     controllerwidthheight.text = '';
+                            //                   });
+                            //                 }
+                            //               }
+                            //             }
+                            //           }
+                            //         },
+                            //         child: Text(
+                            //           'ເພີ່ມພັດສະດຸ',
+                            //           style: TextStyle(
+                            //             fontFamily: 'nsl_bold',
+                            //             fontSize: 15,
+                            //             color: Colors.white,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ),
+                            //     Stack(
+                            //       children: [
+                            //         IconButton(
+                            //             onPressed: () {
+                            //               Navigator.push(
+                            //                   context,
+                            //                   MaterialPageRoute(
+                            //                       builder: (context) =>
+                            //                           OrderItemDetail()));
+                            //             },
+                            //             icon: Icon(
+                            //               Icons.shopping_cart,
+                            //               color: Colors.grey,
+                            //               size: 35,
+                            //             )),
+                            //         GetBuilder<OrderItemController>(
+                            //             init: OrderItemController(),
+                            //             builder: (cont) =>
+                            //                 Column(children: <Widget>[
+                            //                   orderItemController
+                            //                           .items.isNotEmpty
+                            //                       ? Positioned(
+                            //                           child: Container(
+                            //                           alignment:
+                            //                               Alignment.center,
+                            //                           width: 20,
+                            //                           height: 20,
+                            //                           decoration: BoxDecoration(
+                            //                             color: Colors.red,
+                            //                             borderRadius:
+                            //                                 BorderRadius
+                            //                                     .circular(10),
+                            //                           ),
+                            //                           child: Text(
+                            //                             orderItemController
+                            //                                 .items.length
+                            //                                 .toString(),
+                            //                             style: TextStyle(
+                            //                                 color: Colors.white,
+                            //                                 fontSize: 10,
+                            //                                 fontWeight:
+                            //                                     FontWeight
+                            //                                         .bold),
+                            //                           ),
+                            //                         ))
+                            //                       : Container(),
+                            //                 ])),
+                            //       ],
+                            //     ),
+                            //   ],
+                            // ),
+                            // const SizedBox(height: 5),
+                            // Row(
+                            //   children: [
+                            //     Text(
+                            //       'ພັດສະດຸເພີ່ມໄດ້ຫຼາຍກ່ວາ 1 ພັດສະດຸ',
+                            //       style: TextStyle(
+                            //           fontFamily: 'nsl_bold',
+                            //           fontSize: 13,
+                            //           color: Colors.grey.shade800),
+                            //     ),
+                            //   ],
+                            // ),
                             const SizedBox(height: 15),
                             Container(
                               width: width,
